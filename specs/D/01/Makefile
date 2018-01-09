@@ -1,7 +1,7 @@
 DOCUMENT = specD
 LATEX    = pdflatex
 BIBTEX   = bibtex
-SRC      = *.tex tex/* # figures/*
+SRC      = *.tex tex/* img/*
 BIBS     = bib/*.bib
 VERSION  = 011
 REPORT   = cinema_$(DOCUMENT)_v$(VERSION)
