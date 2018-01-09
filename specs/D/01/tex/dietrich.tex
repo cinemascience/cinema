@@ -1,0 +1,33 @@
+Cinema D (\dietrich) specification is a table-based data model for scientific
+data. In version 1.1 of this specification, we take the simplest approach to
+this new model, to simplify adoption and interaction with Cinema.
+
+\subsection{Required Elements}
+
+A Specification D version 1.1 Cinema database is directory that contains all of
+the data in the database. The directory must have the following files.
+Additional files or directories may be present, but they are ignored by Cinema.
+
+\begin{itemize}
+\item a directory named \texttt{\small database\_name.cdb} 
+  ({\em database\_name} is the name of the database) containing:
+\begin{itemize}
+\item \texttt{\small data.csv}, a Comma Separated Value file. This file is
+  specified in Section \ref{csv}. The presence of this specifically named file 
+  indicates that this is a Spec D, version 1.1 Cinema database.
+\item optional data files, referenced by the \texttt{\small data.csv} file.
+\item additional files in the directory, ignored by this specification.
+%\begin{comment}
+%  {\em except} \texttt{\small data.json}. If \texttt{\small data.json} exists
+%  in the root directory, then this defines a Spec D, version 2.0 Cinema 
+%  database. \textbf{Do not have a file named \texttt{\small data.json} if you 
+%  want this to be a Cinema D v1.1 database}.
+%\end{comment}
+\end{itemize}
+\end{itemize}
+
+%Cinema D v2.0, which is decribed in a separate document, is an extension to 
+%existing v1.1 databases that provides additional capabilities. It is not 
+%necessary to read the Cinema D v2.0 specification document or implement its
+%capabilities for a Cinema D v1.1 reader and writer. As of this writing,
+%the specification v2.0 is currently not available for download.
