@@ -10,9 +10,4 @@ The Cinema toolkit consists of the following components:
 - cinema_explorer, a browser-based cinema viewer
 - specifications, a set of specifications for Cinema databases
 
-Mailing lists:
-
-- cinema-dev@lanl.gov
-    - This list is for developers of cinema. You can send questions, feature
-      requests and other comments to this list. 
 
