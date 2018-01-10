@@ -1,0 +1,363 @@
+%
+% Copyright LANL
+% Copyright Kitware
+%
+% This is documentation for the cinema file specification 
+%
+
+\documentclass{article}
+
+\usepackage[export]{adjustbox}
+\usepackage{authblk}
+\usepackage[small,bf]{caption}
+\usepackage{cite}
+\usepackage{enumitem}
+\setlist[description]{leftmargin=\parindent,labelindent=\parindent}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{pdfpages}
+\usepackage{tcolorbox}
+\usepackage{times}
+\usepackage{verbatim}
+\usepackage{xspace}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\chead{LA-UR-15-XXXXX}
+\cfoot{\thepage}
+
+\begin{comment}
+This is where we will put the copyright code
+\end{comment}
+
+\newcommand{\insitu} {\textit{in situ}\xspace}
+\newcommand{\CinemaSpecVersion} {v1.1}
+\newcommand{\Composite} {\textit{Composite}\xspace}
+\newcommand{\Simple} {\textit{Simple}\xspace}
+
+\begin{document}
+\title{Cinema \Composite Database Specification}
+\date{April 22, 2016 \\ \CinemaSpecVersion}
+\author[**]{David DeMarle}
+\author[*]{David H. Rogers}
+\author[*]{John Patchett}
+\author[**]{Berk Geveci}
+\affil[*]{Los Alamos National Laboratory}
+\affil[**]{Kitware, Inc.}
+
+\renewcommand\Authands{ and }
+
+
+%---------------------------------------------------------------------
+% Title page 
+%---------------------------------------------------------------------
+
+\maketitle
+\pagenumbering{arabic}
+
+%---------------------------------------------------------------------
+% Begin Content
+%---------------------------------------------------------------------
+
+\section{Overview}
+Extreme scale scientific simulations are leading a charge to exascale computation, and data analytics runs the risk of being a bottleneck to scientific discovery. Due to power and I/O constraints, we expect in situ visualization and analysis will be a critical component of these workflows. Options for extreme scale data analysis are often presented as a stark contrast: write large files to disk for interactive, exploratory analysis, or perform in situ analysis to save detailed data about phenomena that a scientists knows about in advance. We present a novel framework for a third option – a highly interactive, image-based approach that promotes exploration of simulation results, and is easily accessed through extensions to widely used open source tools. This in situ approach supports interactive exploration of a wide range of results, while still significantly reducing data movement and storage.
+
+More information about the overall design of Cinema is available in the paper, \textit{An Image-based Approach to Extreme Scale In Situ Visualization and Analysis}\cite{cinemaSC14}, which is available at the following link:
+
+\begin{center}
+\texttt{https://datascience.lanl.gov/data/papers/SC14.pdf}
+\end{center}
+
+In the most generic sense, Cinema is a means to abstractly specify a related set of desired analyses. Once specified the analysis can be run automatically and results stored away and later queried. A cinema database combines the specification of the set with the collection of produced data products. We are primarily concerned with data products that support an image-based approach to interactive data exploration. A full definition and examples can be found in the following sections.
+
+\subsection{Use Cases}
+A Cinema Database supports the following three use cases:
+\begin{enumerate}
+\item Searching/querying of meta-data and samples. Samples can be searched purely on metadata, on image content, on position, on time, or on a combination of all of these.
+\item Interactive visualization of sets of samples.
+\item Playing interactive visualizations, allowing the user on/off control of elements in the visualization.
+\end{enumerate}
+
+\subsection{Cinema is Generator and Storage Agnostic}
+This database specification separates the organization of a set of images from the mechanics of how these images are both generated and stored. Any system that can save images while varying a defined set of parameters can produce \textit{Simple} Cinema Databases. Any system that can do the above and produce depth and other component images of isolated objects in the scene can produce \Composite Cinema Databases. In this document we focus on a particular implementation of the database in which data products are stored as named files in a standard file system with a json file that described the overall structure of the set.
+
+\section{The Cinema \Composite Specification}
+A Cinema store is a set of precomputed visualization samples that can be queried and interactively viewed. This document describes release \CinemaSpecVersion of the Cinema \Composite Database, in which image constituents are stored instead of standalone fully pre-rendered images. The constituent images are inputs to a deferred rendering algorithm which allows the user to control which objects are in view and how each is colored. A separate document \cite{cinemaSimpleFileSpec} specifies a \textit{Simple} Cinema Database, which contains a fixed set of pre-rendered images for a fixed set of combinations of visualization operations. The new \Composite specification is an extension of and encompasses the earlier \textit{Simple} database. Note that by rendering objects independently and compositing them together in the viewer we significantly reduce the combinatorial explosion in the number of results that are required over the Simple specification for the same level of explorability.
+
+In both versions, a Cinema store holds a collection of results sampled by a set of visualization parameters. Visualization parameters can be created for any control that the user might have in a traditional visualization session. Examples include isosurfaces, slice planes and viewpoint. Cinema viewing applications give the user a control for each parameter setting and display the corresponding precomputed results, as if the user had made the same choices in a traditional visualization tool from the full resolution input data. As cinema holds only images, it is much more lightweight and display is always a constant time operation regardless of the parameter that is being changed.
+
+Examples of typical parameters in a cinema database are:
+\begin{itemize}
+\item \textbf{Time}. Time varying data can be sampled at arbitrary points along the temporal domain.
+\item \textbf{Camera positions}. In a static camera the position and orientation is fixed. In a spherical camera the position varies over a set of positions centered around a chosen focal point. More complicated camera tracks are possible.
+\item Zero or more \textbf{operators}, such as clipping plane and isocontour samples along their respective ranges. In \Composite Cinema Databases each result is sampled and saved in isolation from all others with nothing else visible in the scene. In a viewing application, the user can choose any number of these samples and see them rendered together with correct occlusion culling.
+\item \textbf{Color} components as described next.
+\end{itemize}
+
+In a Cinema workflow, the application producing a Cinema Database creates a set of image constituents for each sample in the parameter space. Technically it does so by iterating over all assigned values for the color parameter of the currently displayed object and capturing each image. Likewise viewing applications let the user choose an object, take in the set of color results for that object and use them to draw that object on the screen. The image constituents can be:
+\begin{itemize}
+\item \textbf{Color} image. This encodes a standard RGB value for each pixel - the result of rendering the viewpoint from the camera. The earlier \textit{Simple} specification was limited to these. The new capabilities of the \Composite require that each color image be limited to showing just only one object from the scene at a time.
+\item \textbf{Depth} image. This encodes a depth value for every pixel, relative to the camera. This is a requirement for compositing.
+\item \textbf{Value} image. This encodes an arbitrary array value associated with the data that is visualized at each pixel. This is a requirement for dynamic colormapping in the viewer.
+\item \textbf{Luminance} image. This encodes a rendered shading brightness for each pixel. This is required for lighting of dynamic colormapped objects, as otherwise they would appear unlit with no 3D shape queues.
+\end{itemize}
+It is important to note that not all image constituents must be present. Because Cinema viewing applications combine these components together to produce pictures on demand for the user, the final result is dependent upon what image constituents are available and what how the user has decided to see the result (creating different color maps for example).
+
+In addition to the sampled data, a cinema database contains metadata that describes what the samples are, how they are stored and how they can be used. It must:
+\begin{itemize}
+\item dentify the specific format (version number and content type) of the store,
+\item enumerate the entire set of parameters that are explorable in the database,
+\item map parameter value combinations to storage locations,
+\item describe relationships between parameters so that generators can produce the full set without skipping valid items or visiting impossible combinations and so the viewers can choose from within that consistent set,
+\item annotate parameters as necessary to indicate how they need to be handled
+  \begin{itemize}
+    \item define overall classes of parameters
+    \item define the type (depth image, color image, value rendered image, ...) of each image stored in the database,
+    \item define the storage format (jpeg encoded buffer, png encoded buffer, raw float binary buffer, text file, etc...) of each image stored in the database,
+  \end{itemize}
+\end{itemize}
+
+Relationships between parameters are included because in a visualization session some parameters are constrained by others. A scene with two unrelated objects in it could have entirely different sets of arrays for each one of them and thus the choice of colors to colormap by depends on the choice of object displayed. Relationships turn otherwise order independent options into a graph of parent child relationships. Parameter constraints and the necessity to record depth information along with standard color images are the distinguishing features between cinema composite databases and cinema simple databases.
+
+Besides relationships, \Composite data bases are also more complex than \Simple data bases in that some parameters aquire special meaning. Parameters that correspond to color need to be indicated as such so that the generating and viewing applications behave accordingly. Color controlling parameters are called 'fields' in cinema terminology. Another example is 'layer' type parameters which indicate a choice between the potentially visible objects in the scene. A final example is a 'control' type choice which indicates an arbitrary value that affects a particular object and all dependents of that object. An example of a control type parameter is the choice of what isovalue to apply to an isocontour filter.
+
+\section{On data file formats and encodings}
+Potentially a cinema store could save any type of analysis result. In practice we are currently interested in image constituents, that is raster files of various types.
+
+For depth images we currently use the .im format from the Python Image Library. This format has a short text header and then a floating point depth value for each pixel.
+
+For color type images we allow some of the standard file formats. Namely .png, .bmp, .pnm, .tiff or .jpg.
+We store luminance images in the same types of files but place ambient, diffuse and specular terms into R, G and B channels respectively.
+Value images are also encoded and stored in standard image file format. Here we normalize numbers into the range of 1 to $2^{24}-1$ to make them fit into standard RGB pixels. We reserve the color 0,0,0 as NaN or background. The actual ranges are stored in the meta data for the store so that we can later correlate colors back to numbers.
+
+\section{Outline of a Cinema Composite Database schema in JSON data format}
+We now describe a JSON file schema developed to hold the metadata for a cinema database. The metadata defines the set of analysis that a simulation is to perform and once completed it imposes structure on the collection of results.
+
+\subsection{Version information}
+
+This is required database header information, with values that must be as defined below.
+
+\begin{verbatim}
+"metadata": {
+    "type": "composite-image-stack",
+    "version" : "0.1",
+    "store_type": <one of ["FS" or "SFS"]>
+},
+\end{verbatim}
+
+Notes: a ``type'' containing ``parametric-image-stack'' (which is assumed if not specified) means that the data is the simple, non-compositable type.
+ ``version'' holds the minor and patch release versions for the store and imply slight variations in the contents below. This document pertains to version 0.1, which corresponds to ParaView version 5.1.0.
+''store type'' indicates how exactly the data products are stored.
+``FS'' stands for FileStore in which each result is saved in its own file. ``SFS'' is an experimental file store type in which all images are saved as slices in a volume within a single file.
+
+\subsection{name\_pattern}
+
+For FileStore type databases, this string maps parameter values to filenames for samples.
+
+\begin{verbatim}
+"name_pattern" : <valid file path with substitutions>
+Ex: "name_pattern" = "{time}/{phi}/{theta}/image.png" (several subdirectories)
+    "name_pattern" = "{time}_{phi}_{theta}_image.png" (one directory)
+\end{verbatim}
+
+The filename extension (.png, .jpg, etc) determines the default file type for items held in the store. Items in the store with an argument that has a "types" entry ignore the extension and use something else which is implementation dependent. For example a 'depth' type image is not well suited to a '.png' file, so for depth images cinema is free to use a different format, such as '.im'.
+
+The parameter mapping functionality is a remnant of the Simple specification in which all of the parameters could be laid out linearly. Because of the graph structure of parameter relationships, any simple pattern can only be unique up to the point of the first constrained argument. For this reason the composite format ignores the name\_pattern specified structure and instead stores all results in ``name=index'' named files and directories laid out according to the relationship graph. Here index refers to the offset within the values array for the each parameter that corresponds to the file contents. In earlier versions of cinema we used a ``name=value'' scheme for which ensuring consistent precision was more problematic.
+
+\subsection{parameters and constraints}
+
+The rest of the file defines the visualization parameters. Here we define the set of parameters and the set of valid values for each one. Arguments have the following form:
+
+\subsubsection{parameters}
+
+The set of parameters define the set of visualization control knobs that can be changed. Fundamentally consist of a label and a list of potential values with a default value that is used whenever otherwise not selected. Additional entries serve to annotate each parameter so that it can be treated accordingly by the generating and viewing code.
+
+\begin{verbatim}
+<string>: {
+    "label": <string>,
+    "values": [ list of unique values ],
+    "default": <value>,
+    <optionally "role": <one of  "layer", "control", "field">, >
+    <optionally “types”: [ list of one of ['rgb','depth','value','luminance']
+       for each value in "values"], >
+    <optionally “value_ranges”: { set of names with min max values for each
+       entry in the "values" list, >
+    <optionally "typechoice": <one of ["range", "list", “option”, "hidden"]>, >
+}
+\end{verbatim}
+
+The ``role'' entry gives the fundamential meaning of the parameter. ``layer'' parameters indicate which object or object is visible.
+The ``types'' entry adds subsidiary annotation for each potential value. That is there is one type for each value. For ``layers'' parameters these are used to specify the secific image constituent type of every raster file in the database.
+The ``value\_ranges'' entry add additional annotation for each value. For value type colors we use it to store the min and max value (globally), i.e. the range, for the corresponding array.
+The ``typechoice'' entry is useful for viewers which use it to create an suitable control widget for the parameter.
+
+
+\subsubsection{constraints}
+\begin{verbatim}
+<depender1> : {
+    <dependee1> : [list of permissible values for dependee1 that enable depender1],
+    < optionally <dependee2> : [list of permissible values from dependee2], ...>
+}
+\end{verbatim}
+
+The constraints section is where the dependencies between parameters are defined.
+
+\section{Example}
+This example is based on the above JSON schema outline.                 
+\begin{verbatim}
+{
+  "metadata": {
+    "type": "composite-image-stack",
+    "version": "0.1",
+    "store_type": "FS"
+  },
+  "name_pattern": "{phi}_{theta}.png",
+  "parameters": {
+    "Contour1": {
+      "label": "Contour1",
+      "type": "hidden",
+      "role": "control",
+      "values": [
+        2,
+        6,
+        10,
+        14
+      ],
+      "default": 2
+    },
+    "theta": {
+      "label": "theta",
+      "type": "range",
+      "values": [
+        -180,
+        -150,
+        -120,
+        -90,
+        -60,
+        -30,
+        0,
+        30,
+        60,
+        90,
+        120,
+        150
+      ],
+      "default": -180
+    },
+    "colorContour1": {
+      "types": [
+        "value",
+        "luminance",
+        "value",
+        "value",
+        "value",
+        "value",
+        "value",
+        "depth",
+        "value",
+        "value"
+      ],
+      "type": "hidden",
+      "role": "field",
+      "valueRanges": {
+        "cell_cX_0": [
+          -9.5,
+          9.5
+        ],
+        "RTData_0": [
+          43.42250442504883,
+          97.40724182128906
+        ],
+        "point_cZ_0": [
+          -10.0,
+          10.0
+        ],
+        "point_cY_0": [
+          -10.0,
+          10.0
+        ],
+        "cell_cY_0": [
+          -9.5,
+          9.5
+        ],
+        "point_cX_0": [
+          -10.0,
+          10.0
+        ],
+        "cell_RTData_0": [
+          55.2607421875,
+          94.10327911376953
+        ],
+        "cell_cZ_0": [
+          -9.5,
+          9.5
+        ]
+      },
+      "values": [
+        "cell_cZ_0",
+        "luminance",
+        "cell_RTData_0",
+        "cell_cY_0",
+        "point_cX_0",
+        "point_cY_0",
+        "point_cZ_0",
+        "depth",
+        "RTData_0",
+        "cell_cX_0"
+      ],
+      "label": "colorContour1",
+      "default": "cell_cX_0"
+    },
+    "phi": {
+      "label": "phi",
+      "type": "range",
+      "values": [
+        -180,
+        -150,
+        -120,
+        -90,
+        -60,
+        -30,
+        0,
+        30,
+        60,
+        90,
+        120,
+        150
+      ],
+      "default": -180
+    },
+    "vis": {
+      "label": "vis",
+      "type": "option",
+      "role": "layer",
+      "values": [
+        "Contour1"
+      ],
+      "default": "Contour1"
+    }
+  },
+  "constraints": {
+    "Contour1": {
+      "vis": [
+        "Contour1"
+      ]
+    },
+    "colorContour1": {
+      "vis": [
+        "Contour1"
+      ]
+    }
+  }
+}
+\end{verbatim}
+                    
+
+
+\bibliography{bib}{}
+\bibliographystyle{unsrt}
+
+
+\end{document}

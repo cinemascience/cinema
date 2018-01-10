@@ -1,0 +1,184 @@
+%
+% Copyright LANL
+% Copyright Kitware
+%
+% This is documentation for the cinema file specification 
+%
+
+\documentclass{article}
+
+\usepackage[export]{adjustbox}
+\usepackage{authblk}
+\usepackage[small,bf]{caption}
+\usepackage{cite}
+\usepackage{enumitem}
+\setlist[description]{leftmargin=\parindent,labelindent=\parindent}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{pdfpages}
+\usepackage{tcolorbox}
+\usepackage{times}
+\usepackage{verbatim}
+\usepackage{wallpaper}
+\usepackage{xspace}
+\usepackage{xcolor}
+
+
+\begin{comment}
+This is where we will put the copyright code
+\end{comment}
+
+\newcommand{\camstatic}     {\texttt{\small static}\xspace}
+\newcommand{\camphi}        {\texttt{\small phi-theta}\xspace}
+\newcommand{\cphi}          {\texttt{\small phi}\xspace}
+\newcommand{\ctheta}        {\texttt{\small theta}\xspace}
+\newcommand{\camazimuth}    {\texttt{\small azimuth-elevation-roll}\xspace}
+\newcommand{\camyaw}        {\texttt{\small yaw-pitch-roll}\xspace}
+\newcommand{\metadata}      {\texttt{\small metadata}\xspace}
+\newcommand{\parameter}     {\texttt{\small parameter}\xspace}
+\newcommand{\valuemode}     {\texttt{\small value\_mode}\xspace}
+\newcommand{\namepattern}   {\texttt{\small name\_pattern}\xspace}
+\newcommand{\pose}          {\texttt{\small pose}\xspace}
+\newcommand{\parameterlist} {\texttt{\small parameter\_list}\xspace}
+\newcommand{\cameramodel}   {\texttt{\small camera\_model}\xspace}
+
+\newcommand{\LAUR} {LA-UR-17-20645\xspace}
+\newcommand{\insitu} {\textit{in situ}\xspace}
+\newcommand{\CinemaSpecVersion} {v1.0\xspace}
+\newcommand{\Simple} {\textit{Simple}\xspace}
+\newcommand{\chaplin} {Chaplin\xspace}
+\newcommand{\cdevemail}{\texttt{\small cinema-dev@lanl.gov}\xspace} 
+\newcommand{\cinemaemail}{\texttt{\small cinema@lanl.gov}\xspace} 
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+% \chead{\LAUR}
+\cfoot{\thepage}
+
+\newcommand{\todo}[1]{
+}
+
+%\newcommand{\todo}[1]{
+    %\addcontentsline{tdo}{todo}{\protect{#1}}
+    %\marginpar{\colorbox{white!90!black}{\textcolor{black}{
+    %\parbox{2.1cm}{\scriptsize\bf\raggedright #1}
+    %}}}
+%}
+
+
+\begin{document}
+
+\renewcommand\Authands{ and }
+
+% these lines implement subsubsubsection
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+\newcommand{\subsubsubsection}[1]{\paragraph{#1}}
+
+
+%---------------------------------------------------------------------
+% Title page 
+%---------------------------------------------------------------------
+\ThisCenterWallPaper{1.0}{img/script_cover.png}
+\thispagestyle{empty}
+
+\begin{ttfamily}
+\begin{center}
+ \ \ \\
+\vspace{1.0 in}
+\begin{figure}[h!]
+\centering
+\includegraphics[height=0.5in]{img/cinema_logo_name}
+\end{figure}
+\vspace{1.0 in}
+Cinema Database Specification \\
+\chaplin Release v1.0\\
+\bigskip
+\begin{figure}[h!]
+\centering
+\includegraphics[height=1.0in]{img/chaplin_spec_logo}
+\end{figure}
+\bigskip
+Document Version 1.4 \\
+(31 January 2017)\\
+\LAUR\\
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+by \\
+\bigskip
+David Rogers \texttt{\small dhr@lanl.gov}\\
+Jon Woodring \texttt{\small woodring@lanl.gov}\\
+John Patchett \texttt{\small patchett@lanl.gov}\\
+David DeMarle \texttt{\small dave.demarle@kitware.com}\\
+Berk Geveci \texttt{\small berk.geveci@lanl.gov}\\
+\end{center}
+\vspace{1.0 in}
+\begin{flushright}
+Los Alamos National Laboratory\\
+Bikini Atoll Rd., SM 30\\
+Los Alamos, NM 87545\\
+cinema@lanl.gov\\
+\end{flushright}
+\end{ttfamily}
+\newpage
+
+\tableofcontents
+\newpage
+
+\pagenumbering{arabic}
+
+%---------------------------------------------------------------------
+% Begin Content
+%---------------------------------------------------------------------
+
+\section{Cinema Overview}
+\input{tex/cinema}
+
+\newpage
+\section{The Cinema \chaplin Specification}
+\input{tex/chaplin}
+
+\subsection{Chaplin Grammar}
+\input{tex/grammar}
+
+\newpage
+\subsection{Chaplin Implementation}
+\input{tex/implementation}
+
+\subsubsection{Top level}
+\input{tex/toplevel}
+
+\subsubsection{Metadata}
+\input{tex/metadata}
+
+\subsubsection{Parameters}
+\input{tex/parameters}
+
+\subsubsection{Constraints}
+\input{tex/constraints}
+
+\subsubsection{Storage Structure}
+\input{tex/storage}
+
+\newpage
+\subsubsection{Single Database Example}
+\input{tex/example}
+
+\subsubsection{Combining Multiple Databases}
+\input{tex/multidatabase}
+
+\section{Notes on Previous Specifications}
+\input{tex/otherspecs}
+
+\section{Contact Information}
+\input{tex/contact}
+
+
+\bibliography{bib}{}
+\bibliographystyle{unsrt}
+
+
+\end{document}

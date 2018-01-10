@@ -1,0 +1,32 @@
+\label{sec:multiview}
+
+It is often convenient to group cinema data bases together. This is useful, for example in the case of multi-view applications. In this case, independent databases can be collected as siblings in a higher level directory, and another json file which lists the directories can provide information about the set.
+
+An example directory hierarchy containing the above and corresponding json file follow.
+
+\begin{verbatim}
+collection.cdb/
+  info.json
+  results/
+    info.json /*etc as above*/
+  moreresults/
+    info.json /*similar to above*/
+\end{verbatim}
+
+The top level info.json here would be as follows.
+
+\begin{verbatim}
+{
+  "metadata": {
+    "type": "workbench"
+  },
+  "runs": [
+    { "title": "a view of some data",
+      "description": "interesting results ...",
+      "path": "results" },
+    { "title": "a different view",
+      "description": "even more interesting results ...",
+      "path": "moreresults" }
+  ]
+}
+\end{verbatim}

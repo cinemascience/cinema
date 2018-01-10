@@ -1,0 +1,215 @@
+\subsubsubsection{JSON file}
+
+This example is based on the above JSON schema outline.                 
+
+\begin{verbatim}
+{
+  "metadata": {
+    "type": "composite-image-stack",
+    "version": "0.2",
+    "store_type": "FS",
+    "image_size": [ 446, 955 ],
+    "endian": "little",
+    "value_mode": 2,
+    "camera_model": "azimuth-elevation-roll",
+    "camera_eye": [
+      [ -0.023820051408253964, 1.3749762463487758, 2.409604270242429 ]
+    ],
+    "camera_at": [
+      [ 0.0, 0.0, 0.0 ]
+    ],
+    "camera_up": [
+      [ 0.003238554846559421, 0.8685535085368621, -0.49558482076311905 ]
+    ],
+    "camera_nearfar": [
+      [ 0.007973907729484015, 7.973907729484015 ]
+    ],
+    "camera_angle": [
+      30.0
+    ],
+    "pipeline": [
+      {
+        "children": [],
+        "parents": [ "3970" ],
+        "id": "4254",
+        "visibility": 1,
+        "name": "Slice1"
+      },
+      {
+        "children": [ "4254" ],
+        "parents": [ "0" ],
+        "id": "3970",
+        "visibility": 1,
+        "name": "Superquadric1"
+      }
+    ]
+  },
+  "name_pattern": "{pose}.png",
+  "parameter_list": {
+    "colorSlice1": {
+      "types": [
+        "depth",
+        "luminance",
+        "value",
+        "value"
+      ],
+      "type": "hidden",
+      "role": "field",
+      "valueRanges": {
+        "TextureCoords_0": [ 0.0, 1.0 ],
+        "TextureCoords_1": [ -0.0017080907709896564, 1.0 ]
+      },
+      "values": [
+        "depth",
+        "luminance",
+        "TextureCoords_1",
+        "TextureCoords_0"
+      ],
+      "label": "colorSlice1",
+      "default": "TextureCoords_0"
+    },
+    "Slice1": {
+      "label": "Slice1",
+      "type": "hidden",
+      "role": "control",
+      "values": [ -0.5, 0, 0.5 ],
+      "default": -0.5
+    },
+    "pose": {
+      "label": "pose",
+      "type": "range",
+      "values": [
+        [[1.0, 0.0, 7.498798913309288e-33],
+         [7.498798913309288e-33, -6.123233995736766e-17, -1.0],
+         [0.0, 1.0, -6.123233995736766e-17]],
+        [[1.0, 1.2246467991473532e-16, 1.2246467991473532e-16],
+         [1.2246467991473532e-16, -1.0, 0.0],
+         [1.2246467991473532e-16, 1.4997597826618576e-32, -1.0]],
+        [[-1.0, -1.2246467991473532e-16, 0.0],
+         [1.2246467991473532e-16, -1.0, 0.0],
+         [0.0, 0.0, 1.0]],
+        [[1.0, 2.4492935982947064e-16, 7.498798913309288e-33],
+         [7.498798913309288e-33, -6.123233995736766e-17, 1.0],
+         [2.4492935982947064e-16, -1.0, -6.123233995736766e-17]],
+        [[-1.0, 1.2246467991473532e-16, 7.498798913309288e-33],
+         [0.0, 6.123233995736766e-17, -1.0],
+         [-1.2246467991473532e-16, -1.0, -6.123233995736766e-17]],
+        [[-1.0, 0.0, 1.2246467991473532e-16],
+         [0.0, 1.0, 0.0],
+         [-1.2246467991473532e-16, 0.0, -1.0]],
+        [[1.0, 0.0, 0.0],
+         [0.0, 1.0, 0.0],
+         [0.0, 0.0, 1.0]],
+        [[-1.0, -1.2246467991473532e-16, 7.498798913309288e-33],
+         [0.0, 6.123233995736766e-17, 1.0],
+         [-1.2246467991473532e-16, 1.0, -6.123233995736766e-17]]],
+      "default": [
+         [1.0, 0.0, 0.0],
+         [0.0, 1.0, 0.0],
+         [0.0, 0.0, 1.0]
+       ]
+    },
+    "colorSuperquadric1": {
+      "types": [
+        "depth",
+        "luminance",
+        "value",
+        "value"
+      ],
+      "type": "hidden",
+      "role": "field",
+      "valueRanges": {
+        "TextureCoords_0": [ 0.0, 1.0 ],
+        "TextureCoords_1": [-0.0017080907709896564, 1.0 ]
+      },
+      "values": [
+        "depth",
+        "luminance",
+        "TextureCoords_1",
+        "TextureCoords_0"
+      ],
+      "label": "colorSuperquadric1",
+      "default": "TextureCoords_0"
+    },
+    "vis": {
+      "label": "vis",
+      "type": "option",
+      "role": "layer",
+      "values": [
+        "Slice1",
+        "Superquadric1"
+      ],
+      "default": "Slice1"
+    }
+  },
+  "constraints": {
+    "colorSlice1": {
+      "vis": [
+        "Slice1"
+      ]
+    },
+    "Slice1": {
+      "vis": [
+        "Slice1"
+      ]
+    },
+    "colorSuperquadric1": {
+      "vis": [
+        "Superquadric1"
+      ]
+    },
+    "Superquadric1": {
+      "vis": [
+        "Slice1",
+        "Superquadric1"
+      ]
+    }
+  }
+}
+\end{verbatim}
+
+\subsubsubsection{Associated File Structure}
+
+Using the above example, the following paths would be expected for the resulting image channels:
+
+\begin{verbatim}
+./info.json
+./pose=0/vis=0/Slice1=0/colorSlice1=0.Z
+./pose=0/vis=0/Slice1=0/colorSlice1=1.png
+./pose=0/vis=0/Slice1=0/colorSlice1=2.Z
+./pose=0/vis=0/Slice1=0/colorSlice1=3.Z
+./pose=0/vis=0/Slice1=1/colorSlice1=0.Z
+./pose=0/vis=0/Slice1=1/colorSlice1=1.png
+./pose=0/vis=0/Slice1=1/colorSlice1=2.Z
+./pose=0/vis=0/Slice1=1/colorSlice1=3.Z
+./pose=0/vis=0/Slice1=2/colorSlice1=0.Z
+./pose=0/vis=0/Slice1=2/colorSlice1=1.png
+./pose=0/vis=0/Slice1=2/colorSlice1=2.Z
+./pose=0/vis=0/Slice1=2/colorSlice1=3.Z
+./pose=0/vis=1/colorSuperquadric1=0.Z
+./pose=0/vis=1/colorSuperquadric1=1.png
+./pose=0/vis=1/colorSuperquadric1=2.Z
+./pose=0/vis=1/colorSuperquadric1=3.Z
+./pose=1/vis=0/Slice1=0/colorSlice1=0.Z
+./pose=1/vis=0/Slice1=0/colorSlice1=1.png
+...
+./pose=6/vis=1/colorSuperquadric1=2.Z
+./pose=6/vis=1/colorSuperquadric1=3.Z
+./pose=7/vis=0/Slice1=0/colorSlice1=0.Z
+./pose=7/vis=0/Slice1=0/colorSlice1=1.png
+./pose=7/vis=0/Slice1=0/colorSlice1=2.Z
+./pose=7/vis=0/Slice1=0/colorSlice1=3.Z
+./pose=7/vis=0/Slice1=1/colorSlice1=0.Z
+./pose=7/vis=0/Slice1=1/colorSlice1=1.png
+./pose=7/vis=0/Slice1=1/colorSlice1=2.Z
+./pose=7/vis=0/Slice1=1/colorSlice1=3.Z
+./pose=7/vis=0/Slice1=2/colorSlice1=0.Z
+./pose=7/vis=0/Slice1=2/colorSlice1=1.png
+./pose=7/vis=0/Slice1=2/colorSlice1=2.Z
+./pose=7/vis=0/Slice1=2/colorSlice1=3.Z
+./pose=7/vis=1/colorSuperquadric1=0.Z
+./pose=7/vis=1/colorSuperquadric1=1.png
+./pose=7/vis=1/colorSuperquadric1=2.Z
+./pose=7/vis=1/colorSuperquadric1=3.Z
+
+\end{verbatim}

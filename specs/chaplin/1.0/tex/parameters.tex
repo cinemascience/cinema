@@ -1,0 +1,362 @@
+\label{sec:PARAMETERS}
+
+A \chaplin database is a collection of results sampled by a set of
+visualization parameters. The collection of parameters that vary are
+stored in the \parameterlist section of the json file.
+Each parameter in the set is fully described by one of the
+entries in the overall key-values pair. The values for each entry
+contain information that together fully define the parameter,
+including what is being sampled, the values it takes, and how the
+results are to be interpretted. In \chaplin
+everything from simulation time, to scene graph components, to operator
+controls, to colors are represented by annotated parameters.
+
+The pieces of information are stored within a dictionary within each paremeter.  The types of information are described
+next. Examples of the most important parameters typically found in a
+Cinema database follow them.
+
+\subsubsubsection{Label (Required)}
+
+Each parameter will have a label. This is a human readable string that
+is intended to be presented to the user in a viewing application next to the
+controls over the parameter.
+
+\begin{verbatim}
+  "parameter_list": {
+    "parameter1": {
+      "label": "slice plane offset",
+      ...
+\end{verbatim}
+
+\subsubsubsection{Values (Required)}
+
+Within the dictionary the most important element is a list of values
+that the parameter takes on within the database.
+
+\begin{verbatim}
+  "parameter_list": {
+    "parameter1": {
+      ...
+      "values": [ -0.5, -0.1, 0, 0.5, 42.0, 500.0 ],
+      ...
+\end{verbatim}
+
+\subsubsubsection{Default Value (Optional)}
+
+For viewing applications it is helpful to designate one entry within
+the list of values as the default one to picked when the user has not
+otherwise made a selection. If the default value is not written into
+the file, the first entry in the list should be used instead.
+
+\begin{verbatim}
+  "parameter_list": {
+    "parameter1": {
+      ...
+      "default": 42.0,
+      ...
+\end{verbatim}
+
+\subsubsubsection{Role (Optional)}
+
+Parameters may also have a \textit{role}. The roll more fully describes the
+purpose of the parameter for generation and display purposes.
+
+A role of ``layer'' indicates that this parameter defines what specific object or objects
+should be shown. There is typically only one parameter with the role
+in the database.  
+
+\begin{verbatim}
+  "parameter_list": {
+    "vis": {
+      "label": "objects in scene",
+      "values": [
+        "Slice1",
+        "Superquadric1"
+      ],
+      "role": "layer"
+      ...
+    }
+\end{verbatim}
+
+A role of ``control'' indicates that this parameter is one of
+a set that controls aspects of a specific object (i.e. filter
+settings) and of the objects (i.e. downstream filters) that depend on it as well.
+
+\begin{verbatim}
+  "parameter_list": {
+    "Slice1": {
+      "label": "Slice1",
+      "values": [ -0.5, 0.0, 0.5 ],
+      "role": "control"
+    },
+\end{verbatim}
+
+A role of ``field'' indicates that this parameter represents the set
+of captured Image Channels for an object.
+
+\begin{verbatim}
+  "parameter_list": {
+    "colorObject1": {
+      "label": "Color Inputs for Object1",
+      "values": [
+        "depth",
+        "Pressure_0",
+        "Temperature_0"
+      ],
+      "types": [
+        "depth",
+        "lut",
+        "lut"
+      ],
+      "role": "field"
+    },
+\end{verbatim}
+
+For parameters with a role of ``field'' additional annotations (\textit{types} and \textit{valueRanges}) serve
+to better specify the charactersitics of the Image Channels.
+
+\subsubsubsection{Types -- Image Channels (Optional)}
+
+\textit{types} is the mechanism by which the different channel types
+are distinquished. It lists the specific image component type
+corresponding to each entry in the field type parameter's value list. In the following
+example we have three image channels, the first called ``depth'' is a
+depth image. The second ``L'' is a luminance image. The last two channels
+``pressure\_0'' and ``temperature\_0'' are value images.
+ 
+\begin{verbatim}
+  "parameter_list": {
+    "colorObject": {
+      "label": "color for a meteo result",
+      "values": [
+        "depth",
+        "L",
+        "pressure_0",
+        "temperature_0"
+      ],
+      "role": "field",
+      "types": [
+        "depth",
+        "luminance",
+        "value",
+        "value"
+      ],
+      ...
+    },
+
+\end{verbatim}
+
+\subsubsubsection{Value Range (Optional)}
+
+For value type image channels it is useful to record the minimum and
+maximum recorded values for the corresponding data array or
+arrays. The value range annotation does this within a dictionary of
+names to minimum and maximum value pairs. For every ``value'' type image channel, there will be a
+corresponding entry in the value range dictionary. Continuing the
+above example we add storage for the range of both the pressure
+and temperature data.
+
+\begin{verbatim}
+  "parameter_list": {
+    "colorObject": {
+      "label": "color for a meteo result",
+      "values": [
+        "depth",
+        "L",
+        "pressure_0",
+        "temperature_0"
+      ],
+      "role": "field",
+      "types": [
+        "depth",
+        "luminance",
+        "value",
+        "value"
+      ],
+      "valueRanges": {
+        "pressure_0": [ 29.4, 29.8 ],
+        "temperature_0": [33.0, 36.5 ]
+      },
+      ...
+    },
+\end{verbatim}
+
+\subsubsubsection{Display Hint (Optional)}
+
+Parameters may have a suggested widget \textit{type}. The type is used as
+a hint for viewing applications to inform what type of GUI widget is most
+appropriate for this control. A type of ``option''
+is best displayed with a combobox type widget that lets the user select many
+values at once. A type of ``range'' is best displayed with a menu,
+scalar bar, or slider, that lets the user select just one value
+at any give time time.  A type of ``hidden'' should generally not be
+displayed to the user.
+
+\begin{verbatim}
+  "parameter_list": {
+    "vis": {
+      "label": "vis",
+      "role": "layer",
+      "type": "option",
+      ...
+    "slice": {
+      "label": "slice plane offset",
+      "role": "control",
+      "type": "range",
+      ...
+    "color": {
+      "label": "color channels",
+      "role": "field",
+      "type": "hidden",
+      ...
+     }
+\end{verbatim}
+
+\subsubsubsection{Parameter Example: Time}
+\label{sec:Time}
+
+Time varying data can be sampled at arbitrary points along the temporal domain.
+\begin{verbatim}
+ "parameter_list": {
+   "time": { "default": "0.000000e+00",
+             "values": ["0.000000e+00", "1.000737e-04", "1.999051e-04"],
+             "type": "range",
+             "label": "simulation time" },
+   ...
+ }
+\end{verbatim}
+
+\subsubsubsection{Parameter Example: Camera Positions}
+\label{sec:camerapositions}
+
+In a traditional visualization setting the user can manipulate the camera arbitrarily. For cinema we discretize and organize the range of captured motions into of several camera motion classes. 
+The camera model in use within a database is listed in the \cameramodel
+entry of the json files metadata section. 
+See section~\ref{sec:cameramodel} for specifics. 
+
+\begin{itemize}
+\item \camstatic No addition information needed in this section. 
+Static cameras do not require a corresponding parameter entry.
+
+\item \camphi A model in which the discrete camera positions are described by the product of two parameters with angular positions. Additional information needed defines the \cphi and \ctheta values. The camera ``from'' position varies over a set of regularly sampled angular positions centered around a chosen focal point. These cameras will have one or two corresponding parameters entries. In Cinema, \cphi is defined to be rotations around the vertical axis, going from -180 to 180 degrees, inclusive on the negative only. \ctheta is defined to be rotations from south to north pole, ranging from -90 to 90 degrees inclusive.
+\begin{verbatim}
+ "parameter_list": {
+   "phi": { "default": -180,
+            "values": [-180, -150, -120, -90, -60, -30,
+                       0,
+                       30, 60, 90, 120, 150],
+            "type": "range",
+            "label": "phi" },
+   "theta": { "default": -90,
+              "values": [-90, -64, -38, -12, 13, 38, 63, 88],
+              "type": "range",
+              "label": "theta" },
+   ...
+ }
+\end{verbatim}
+\item \camyaw and \camazimuth both require a \pose section. 
+In these more general \pose based cameras, we store complete camera reference frames from an arbitrary collection of viewpoints. 
+
+These cameras require a \pose parameter, which contains any number of 3x3 normalized camera reference frames. To keep the combination of camera positions over time and view directions manageable, we vary the camera's local coordinate frame consistently at every time step, but offset them from a different location at each time step. An example is shown below. 
+\begin{verbatim}
+ "parameter_list": {
+  "time": {
+    "values": ["0.0e+00",
+               "1.0e-04",
+               "8.0e-04"],
+     ... },
+  "pose": {
+    "values": [[[-1.0, 1.224e-16, 7.498e-33],
+                [0.0, 6.123e-17, -1.0],
+                [-1.224e-16, -1.0, -6.123e-17]],
+               [[-1.0, 1.109e-16, 5.175e-17],
+                [0.0, 0.422, -0.906],
+                [-1.224e-16, -0.906, -0.422]],
+               ... ],
+    ...
+    },
+  ...
+ }
+\end{verbatim}
+\end{itemize}
+
+\subsubsubsection{Parameter Example: Objects}
+\label{sec:objects}
+
+Different items may be displayed in the scene. During image generation
+it is important that only one object be displayed at a time so that we
+can capture its depth, color, value and other image channels in
+isolation. From the viewing application the end user selects zero or
+more entries from the same parameter to show any number of objects
+together at the same time. Visibility parameters have a \textit{role} annotation of ``layer''.
+
+\begin{verbatim}
+ "parameter_list": {
+   "vis": {
+     "values": [
+       "Contour1",
+       "Wavelet1",
+       ...
+     ],
+     "role": "layer",
+     "type": "option",
+     ...
+   }
+ }
+\end{verbatim}
+
+\subsubsubsection{Parameter Example: Operators}
+\label{sec:operators}
+
+Zero or more operators, such as clipping plane and isocontour samples along with their respective ranges are represented by parameters. Operators, like other parameters are cumulative. For each operator, the value is applied and the resulting scene is recorded. Operator parameters have a \textit{role} annotation of ``control''.
+
+\begin{verbatim}
+ "parameter_list": {
+    "Contour1": {
+      "values": [37.3531, 97.2221, 157.091, 216.96, 276.829],
+      "role": "control",
+      ...
+    },
+    ...
+ }
+\end{verbatim}
+
+\subsubsubsection{Parameter Example: Output Image Channels}
+\label{sec:image_channels}
+
+In a Cinema workflow, the application producing a Cinema Database creates a set of image channels for each sample in the parameter space. Viewing applications use these channels to draw objects and to color them dynamically dependent on the user's choices for solid color or colormapped value arrays. Recall that ``types'' and ``valueRanges'' annotations are important for interpreting the output of each possible value for a color control.
+
+The types entries describe the specific image channels type. There are several possible image channels.
+
+\begin{itemize}
+\item \textbf{Required}. One of the following image channels is required. Both \textbf{cannot} be present.
+\begin{itemize}
+\item \textbf{RBG}. An image containing colored pixel information. This can be one of two types:
+\begin{itemize}
+\item \textbf{Color} channel. This encodes a standard RGB value for each pixel - the result of rendering the viewpoint from the camera. 
+Color images can not be dynamically color mapped.
+\item \textbf{LUT (Lookup Table)} channel. This contains pixels that have been colored by applying a colormap to a single variable.
+\end{itemize}
+\item \textbf{Value} channel. This encodes an arbitrary array value associated with the data that is visualized at each pixel. Global ranges for each array, i.e. the min and max value for a value over all time steps and parameter settings, are recorded in the meta data file. In \chaplin, value images are stored as floating point image channels, where the value is either normalized between 0.0 and 1.0 or kept unmodified, and stored in a ``.Z'' file. This is described more fully in section~\ref{sec:valuemode}.
+\end{itemize}
+\item \textbf{Optional}. These channels enable other types of operations.
+\begin{itemize}
+\item \textbf{Depth} channel. This encodes a depth value for every pixel, relative to the camera. Required for compositing. In \chaplin, depth images are stored as floating point image channels, ranging from 0 for the near plane to 255 for the far plane, and kept in zlib compressed ``.Z'' files. As with value images the word size is 32bit. The endianness and image dimensions are recorded in the metadata section's endian and image\_size entries.
+\item \textbf{Luminance} channel. This encodes a rendered shading brightness for each pixel. Required for lighting to be included in the final rendering. In \chaplin, luminance images are stored in RGB images where the R component contains the ambient gray value, G contains the diffuse, and B contains the specular component. Of these, currently only the diffuse component is used. All components range from 0 to 255.
+\end{itemize}
+\end{itemize}
+
+An example of this parameter list section follows. Here we have all possibilities for the image channels of an object named ``Contour1''. The image channels consist of depth, luminance, and a value for a scalar quantity called ``RTData''. The RTData array varies over the entire simulation and for all objects between 37 and 277.
+
+\begin{verbatim}
+ "parameter_list": {
+   "colorContour1": { 
+     "values": ["depth", "luminance", "RTData_0"],
+     "types": ["depth", "luminance", "value"],
+     "valueRanges": {"RTData_0": [37.3531, 276.829]},
+     "role": "field"
+   },
+   ...
+  }
+\end{verbatim}
+

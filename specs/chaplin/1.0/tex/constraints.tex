@@ -1,0 +1,71 @@
+\label{sec:CONSTRAINTS}
+
+Constraints are relationships between parameters. These are included in the specification because a visualization is sometimes designed so that parameters are constrained by and dependent on others. For example, a visualization might include two unrelated objects with different sets of arrays on each object. In such a scene, the choice of what array to use to apply colors then depends on what object is displayed.
+
+% A generating application must visit all reachable states to produce results and it must avoid visiting and storing results for invalid and redundant states. A viewing application must ensure that all values that affect the appearance of an object are taken into account when deciding what contents are required for display.
+
+% These relationships turn otherwise order independent options into a graph of parent child relationships. Unconstrained parameters will be fully sampled within the database. Constrained parameters will be sampled fully whenever at least one of its constraints are met.
+
+In cinema we store this information in a constraints entry in the json file. It consists of a list of parameters, and for each parameter in the list there is a sub list of one or more parameters and associated parameter values, that the containing parameter's presence depends upon. See section~\ref{sec:g-constraints}.
+
+A specific example of this with an object's color inputs are only output when the vis layer parameter shows that the object is selected. Likewise for the color of the contour object.
+
+\begin{verbatim}
+ "constraints": {
+    "colorContour1": {
+      "vis": [
+        "Contour1"
+      ]
+    },
+    "colorObject1": {
+      "vis": [
+        "Object1"
+      ]
+    },
+    ...
+\end{verbatim}
+
+
+A more complicated example which adds in two levels of dependencies is as follows. Here we represent a the three element data pipeline that might create a visualization. In the pipeline a Sphere object is fed into a Slice filter and the Slice filter is fed into a Clip filter.
+
+\begin{verbatim}
+ "constraints": {
+    "colorSphere1": {
+      "vis": [
+        "Sphere1"
+      ]
+    },
+    "colorSlice1": {
+      "vis": [
+        "Slice1"
+      ]
+    },
+    "colorClip1": {
+      "vis": [
+        "Clip1"
+      ]
+    },
+    "Sphere1": {
+      "vis": [
+        "Clip1",
+        "Sphere1",
+        "Slice1"
+      ]
+    },
+    "Slice1": {
+      "vis": [
+        "Clip1",
+        "Slice1"
+      ]
+    }
+    "Clip1": {
+      "vis": [
+        "Clip1"
+      ]
+    },
+    ...
+\end{verbatim}
+
+To begin with there is the color relationship information described above. Besides that there is information about the parameters for objects along the pipeline.
+
+Starting at the end of the pipeline the clipping plane value is sampled whenever the clipped data is shown. Going one step up the pipeline the slice plane's value must be varied whenever either the slice or the clip output are visible. This is necessary because the slice filter is an input to the clip filter so its value affects the appearence of the clipped result. Likewise hypothetical parameters of the sphere object itself (the radius for example) have to vary whenever any of the three objects were visible. Remember also that if the visibility parameter selects something other than one of these three objects, then none of these parameters will be exercised.

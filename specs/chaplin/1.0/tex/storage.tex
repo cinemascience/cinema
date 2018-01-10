@@ -1,0 +1,162 @@
+\label{sec:storage}
+
+A low level data storage layer beneath the metadata layer holds individual results in the form of image channels saved as images. For example, a depth image channel for one particular object drawn from one particular viewpoint at one particular time step. For each valid combination of parameter settings, their will be one file.
+
+The storage layer organizes results into numbered directories within a tree hierarchy. Each directory corresponds to a variable and numbered contents correspond to different values for the variable. The mapping of numbers to data values comes from the list of values for each parameter in the metadata. In the example below we have a data base with two time steps, each with two camera poses and two objects. The first object has three color components, the second has only two.
+
+\begin{verbatim}
+results/
+  info.json
+  pose=0/
+    time=0/
+      vis=0/
+        color=0.Z
+        color=1.png
+        color=2.Z
+      vis=1/
+        color=0.Z
+        color=1.png
+    time=0/
+      vis=0/
+        color=0.Z
+        color=1.png
+        color=2.Z
+      vis=1/
+        color=0.Z
+        color=1.png
+  pose=1/
+    time=0/
+      vis=0/
+        color=0.Z
+        color=1.png
+        color=2.Z
+      vis=1/
+        color=0.Z
+        color=1.png
+    time=1/
+      vis=0/
+        color=0.Z
+        color=1.png
+        color=2.Z
+      vis=1/
+        color=0.Z
+        color=1.png
+\end{verbatim}
+
+\begin{comment}
+The directory hierarchy follows an order that satisfies the constraints between variables. Applications that use the cinema python reference library should not worry about the specific layout of the results as they will be be isolated from version incompatibilities by the reference library. They can simply use the libraries MongoDB like database API to search for, insert and retrieve contents based on parameter names and values. For applications that can not use the reference API, the exact file structure mapping is described below.
+
+This information is provided for those who wish to bypass the cinema\_python reference library but still use or create compatible file stores. In this situation it is necessary to know exactly how to map parameter value combinations to file names. There are three important aspects, one is to derive the file type and file format extension, another is to derive a specific file name for a particular value, and the last is to derive a consistent directory path given a collection of values.
+
+Note that the exact format of the store has changed over time as Cinema has evolved. The reference library uses a cinema store's included version markers to provide backwards compatibility. We here describe the latest version information as of Cinema Chaplin version 0.1. For further details consult the FileStore class's \_get\_filename() method in the reference library.
+\end{comment}
+
+\subsubsubsection{Constructing a Path to Output Files}
+
+The scheme we use to consistently arrange files into the file system is to sort alphabetically the parameter names, and then lay out the data in sub-directories in a dependency following order. In particular parameters with no dependencies go first, and then as dependencies are satisfied, dependent parameters follow, always within alphabetical order at each dependency level.
+
+A pseudocode summary of the standard implementation's \_get\_filename() method
+of the file\_store class is as follows.
+\begin{verbatim}
+        keys = [sort(parameters_names)]
+        ordered = []
+        while len(keys):
+            k = keys.pop(0)
+            parents = k.getdependees()
+            ready = all parents already in ordered
+            if not ready:
+                keys.append(k) # try back later
+            else:
+                ordered.append(k) # this one is next
+        for k in ordered:
+            index = offset for parameter[k]'s value
+            filename = filename + "/" + key + "=" + index
+\end{verbatim}
+
+
+With parameters:
+\begin{verbatim}
+"b_param": {"values": [1,-2]}
+"a_param": {"values": ["a","b"]}
+"c_param": {"values": [42.0, 3.1415926535897932384626433832795028841971],
+            "types": ["depth","rgb"],
+            "role": "field" }
+"d_param": {"values": ["I","II","III"],
+            "types": ["luminance","value","depth"],
+            "role": "field"}
+\end{verbatim}
+and constraints:
+\begin{verbatim}
+constraints": {
+   "c_param": {
+      "b_param": [1]
+   },
+   "d_param": {
+      "b_param": [-2],
+   }
+}
+\end{verbatim}
+
+and filename\_pattern ``dontcare.tiff'':
+the resulting layout would be:
+\begin{verbatim}
+  a_param=0/b_param=0/c_param=0.Z
+  a_param=0/b_param=0/c_param=1.tiff
+  a_param=0/b_param=1/d_param=0.tiff
+  a_param=0/b_param=1/d_param=1.Z
+  a_param=0/b_param=1/d_param=2.Z
+  a_param=1/b_param=0/c_param=0.Z
+  a_param=1/b_param=0/c_param=1.tiff
+  a_param=1/b_param=1/d_param=0.tiff
+  a_param=1/b_param=1/d_param=1.Z
+  a_param=1/b_param=1/d_param=2.Z
+\end{verbatim}
+
+Because ``a\_param'' comes before ``b\_param'' alphabetically. ``c\_param'' and ``d\_param'' follow their shared dependee ``b\_param'' and would do so even if they were renamed to something less than ``b\_param''.
+
+Adding another dependency level would change the layout with the new parameter following its own dependee.
+\begin{verbatim}
+"aa_param": {"values": [10, 11]}
+\end{verbatim}
+additional constraint:
+\begin{verbatim}
+   "aa_param": {
+      "d_param": ["I","III"]
+   }
+\end{verbatim}
+\begin{verbatim}
+  a_param=0/b_param=0/c_param=0.Z
+  a_param=0/b_param=0/c_param=1.tiff
+  a_param=0/b_param=1/d_param=0/aa_param=0.tiff
+  a_param=0/b_param=1/d_param=0/aa_param=1.tiff
+  a_param=0/b_param=1/d_param=1.Z
+  a_param=0/b_param=1/d_param=2/aa_param=0.Z
+  a_param=0/b_param=1/d_param=2/aa_param=1.Z
+  a_param=1/b_param=0/c_param=0.Z
+  a_param=1/b_param=0/c_param=1.tiff
+  a_param=1/b_param=1/d_param=0/aa_param=0.tiff
+  a_param=1/b_param=1/d_param=0/aa_param=1.tiff
+  a_param=1/b_param=1/d_param=1.Z
+  a_param=1/b_param=1/d_param=2/aa_param_0.Z
+  a_param=1/b_param=1/d_param=2/aa_param_1.Z
+\end{verbatim}
+
+\subsubsubsection{File Type}
+
+There are a variety of content types in a \chaplin store: depth and value images are files of floating point numbers, while luminance and color images are files of RGB tuples. The content type is determined from a ``field'' or color parameter's  ``types'' entry. For each value that one of these parameters takes, the corresponding ``types'' entry indicates if it is 'rgb', 'depth', 'value', or 'luminance' type content.
+
+\begin{verbatim}
+ "parameter_list": {
+   "colorContour1": { "values": ["val1", "val2", "val3"],
+                      "types": ["depth", "luminance", "value"],
+                      "valueRanges": {"RTData_0": [37.3531, 276.829]},
+                      "role": "field" },
+   ...
+  }
+\end{verbatim}
+
+In the example above, whenever the colorContour1 parameter takes on ``val1'', the content is a depth image. When it is ``val2'' the content is a luminance image. When it is ``val3'' it is a value image. In \chaplin depth and value images are stored in zlib compressed ``.Z'' files. Everything else is stored in a standard image format. The choice of a specific image format, ``.png'', ``.tiff'', ``.jpeg'' and the like is made based on the trailing file extension from the \textit{name\_pattern} entry.
+
+\subsubsubsection{File Name}
+
+Parameter settings are encoded into file and directory names. We use a ``key=index'' scheme for all parameters where the key is the parameter name and the index is the 0 based index into the values list to a specific value. In the example above when colorContour1 parameter takes on ``val1'' the result will appear in a file or directory named ``colorContour1=0''. Using indices instead of values avoids a number of conversion problems involving decimal precision and also the fact that non-scalar values do not map well onto file system naming rules.

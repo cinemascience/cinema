@@ -1,0 +1,174 @@
+\label{sec:metadata}
+
+In addition to the sampled data as represented by the parameter space and constraint set, a cinema database contains additional data that describes the version of the database, supplemental information about cameras, and additional information about relationships between objects in the scene.
+
+\subsubsubsection{Database Type (Required)}
+
+The \textit{type} entry states whether this cinema store holds a \textit{Simple} non-compositable database, or a compositable database. Non-compositible databases have a value of ``parametric-image-stack''. These are described in the Astaire Specification document. Chaplin's compositible databases have a value of ``composite-image-stack''.
+
+\begin{verbatim}
+ "metadata": {
+   "type": "composite-image-stack",
+   ...
+ },
+\end{verbatim}
+
+\subsubsubsection{Database Version (Required)}
+
+A \textit{version} entry state the specific revision level within the type. The current revision level described in this document is 0.2.
+
+\begin{verbatim}
+ "metadata": {
+   ...
+   "version": "0.2",
+   ...
+ },
+\end{verbatim}
+
+\subsubsubsection{Store Type (Required)}
+
+The \textit{store\_type} entry describes the lower level file format that the image channel data is kept in. It is possible to store the actual data under various containers. The one described in this document is implemented as named files within a filesystem directory as described in section~\ref{sec:storage}. The corresponding code is ``FS''  that is based on named files and directories. ``SFS'' is reserved for a storage format that places files within a VTK's XML image data volume files.
+
+\begin{verbatim}
+ "metadata": {
+   ...
+   "store_type": "FS",
+   ...
+ },
+\end{verbatim}
+
+\subsubsubsection{Camera Model (Required)}
+\label{sec:cameramodel}
+
+The camera model describes the camera behaviors encapsulated in the database. 
+Cameras have different capabilities and constraints, and different supporting data is required for cameras in the \metadata and \parameter sections.  Supported models are:
+
+\begin{itemize}
+\item \camstatic This is a camera that looks at a fixed position. 
+\item \camphi This corresponding to regularly sampled camera positions sitting on a ruled surface looking inward at a location in space. Requires \cphi and \ctheta parameters to define the angular samplings of the grid. This is described in Section~\ref{sec:camerapositions}.
+\item \camazimuth This is an inward facing camera. Requires a \pose parameter to define the arbitrarily oriented normalized matrices that define the sampled camera directions. May optionally be supplemented with time varying offset location information about which the camera moves over time. This is described in the Section~\ref{sec:camerapositions}.
+\item \camyaw This is an outward facing camera. 
+Requires a \pose parameter to define the arbitrarily oriented normalized matrices that define the sampled camera directions. may optionally be supplemented with time varying offset location information about which the camera moves over time. This is described in the section~\ref{sec:camerapositions}.
+\end{itemize}
+
+\begin{verbatim}
+ "metadata": {
+   ...
+   "camera_model": "azimuth-elevation-roll",
+   ...
+ },
+\end{verbatim}
+
+\subsubsubsection{Endian (Required)}
+\label{sec:endian}
+
+We store depth and value image channels as raw zlib compressed 32-bit
+floating point files. The endian entry records the endianness that the
+floats are stored in so that the underlying stream of bytes can be
+correctly interpretted as numbers when read back in on a different computer.
+
+\begin{verbatim}
+ "metadata": {
+   ...
+   "endian": "little",
+   ...
+ },
+\end{verbatim}
+
+\subsubsubsection{Image Size (Required)}
+
+We store depth and value image channels as raw zlib compressed 32-bit
+floating point files. The image size entry records the width and height
+of the data so that the underlying stream can be resized back
+to the original rectangular shape when it is read back in.
+
+\begin{verbatim}
+ "metadata": {
+   ...
+   "image_size": [ 446, 955 ],
+   ...
+ },
+\end{verbatim}
+
+\subsubsubsection{Value Mode (Optional)}
+\label{sec:valuemode}
+
+This is a record of the type for value image channels. When the entry is absent, or contains the value ``1'', it means that the value image channels were made using the approximative method. Value images are floating point images in which each pixel is a number between 0.0 and 1.0 (the values are normalized) and then stored in a zlib compressed ``.Z'' file.
+
+Note that if the \valuemode entry is present and contains the value ``2'' it means that the value images contain exact numerical quantities (the original data values) instead of normalized ones.
+
+\begin{verbatim}
+ "metadata": {
+   ...
+   "value_mode": 2,
+   ...
+ },
+\end{verbatim}
+
+\subsubsubsection{Camera Data (Optional)}
+\label{sec:cameradata}
+
+Supplemental camera information may be present to support the \camazimuth and 
+\camyaw camera models. In either case cinema's parameter system provides an arbitrary list of camera directions. Those directions are placed at specific locations in space at each time step with the addition of offset information.
+
+\begin{verbatim}
+ "metadata": {
+   "camera_model": "azimuth-elevation-roll",
+   "camera_eye": [[0.0, 0.0, 66.92],  /*corresponds to time 0.0e+00*/
+                  [1.0, 0.0, 66.92],  /*corresponds to time 1.0e-04*/
+                  [2.0, 0.0, 66.92]], /*corresponds to time 8.0e-04*/
+   "camera_at": [[0.0, 0.0, 0.0], /*as above */
+                 [1.0, 0.0, 0.0],
+                 [2.0, 0.0, 0.0]]
+   "camera_up": [[0.0, 1.0, 0.0], /*as above */
+                 [0.0, 1.0, 0.0],
+                 [0.0, 1.0, 0.0]],
+   ...
+ }
+\end{verbatim}
+
+Furthermore, two additional optional pieces of information server to precisely define the viewing frustum at each sample. These are the camera\_nearfar and camera\_angle's.
+
+\subsubsubsection{Pipeline (Optional)}
+
+A pipeline entry directly encodes relationships between objects in the generating scene. It, in combination with the constraints and roles information is helpful for building up GUIs.
+
+Here a graph of objects in the scene is explicitly recorded. This is not entirely redundant with the constraints system described in section~\ref{sec:CONSTRAINTS} because abstractly the later variable centric view is more inclusive and concretely because there is not generally a one to one relationship between objects and parameters. When objects are present the pipeline information facilitates organizing the controllable options to present them to the user.
+
+\begin{verbatim}
+ "metadata": {
+   "pipeline": [
+     { "children": [],
+       "parents": [
+         "2488"
+       ],
+       "id": "2687",
+       "visibility": 1,
+       "name": "Contour1" },
+     { "children": [
+         "2687"
+       ],
+       "parents": [
+         "0"
+       ],
+       "id": "2488",
+       "visibility": 1,
+       "name": "Wavelet1" },
+     ...
+   ],
+   ...,
+ }
+\end{verbatim}
+
+\subsubsection{Name Pattern}
+\label{sec:namepattern}
+
+The \namepattern entry specifies the file format for RGB type color
+component image channels (inluding 'color', 'lut' and 'luminance')
+within the ``FS'' type database. The trailing file extension defines
+this type. In comparison 'depth' and 'value' images are alwayed stored as zlib compressed
+raw data in ``.Z'' files and thus do not need to be specified.
+
+\begin{verbatim}
+  "name_pattern": "{dontcare}.png",
+\end{verbatim}

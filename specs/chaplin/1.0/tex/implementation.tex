@@ -1,0 +1,11 @@
+\label{sec:implementation}
+
+The content of a database is specified in a JSON format text file. The JSON file serves to enumerate the set of visualization samples, the relationships between them, and provides additional information used to interpret the content.
+
+In any Cinema database, a number of different variables, or \textit{parameters} are of fundamental importance. Each parameter represents one setting that the user might vary to inspect the data with. Concrete examples include simulation time step, camera position, visibility, filter settings and choice of data array to color by.
+
+In contrast to simpler Cinema databases, a \chaplin database contains a \textbf{subset} of the full combinatorial set of all variable settings. The contents are a subset because invalid and uninteresting combinations are excluded. Examples of excluded combinations are the color choice for a non-visible object and isolevel setting for data that is not being isocontoured.
+
+As always, additional information about the database that is not of the same combinatorial visualization-space nature is useful. Examples of these include version numbers and time-dependent camera specific information.
+
+The semantics and meaning of the four required top-level elements of the JSON file follow.

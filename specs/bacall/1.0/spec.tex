@@ -1,0 +1,338 @@
+%
+% Copyright LANL
+% Copyright Kitware
+%
+% This is documentation for the cinema file specification 
+%
+
+\documentclass{article}
+
+\usepackage[export]{adjustbox}
+\usepackage{authblk}
+\usepackage[small,bf]{caption}
+\usepackage{cite}
+\usepackage{enumitem}
+\setlist[description]{leftmargin=\parindent,labelindent=\parindent}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{pdfpages}
+\usepackage{tcolorbox}
+\usepackage{times}
+\usepackage{verbatim}
+\usepackage{xspace}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\chead{LA-UR-15-XXXXX}
+\cfoot{\thepage}
+
+\begin{comment}
+This is where we will put the copyright code
+\end{comment}
+
+\newcommand{\insitu} {\textit{in situ}\xspace}
+\newcommand{\CinemaSpecVersion} {v1.0}
+\newcommand{\Composite} {\textit{Composite}\xspace}
+\newcommand{\Simple} {\textit{Simple}\xspace}
+
+\begin{document}
+\title{Cinema \Composite Database Specification}
+\date{November 1, 2015 \\ \CinemaSpecVersion}
+\author[**]{David DeMarle}
+\author[*]{David H. Rogers}
+\author[*]{John Patchett}
+\author[**]{Berk Geveci}
+\affil[*]{Los Alamos National Laboratory}
+\affil[**]{Kitware, Inc.}
+
+\renewcommand\Authands{ and }
+
+
+%---------------------------------------------------------------------
+% Title page 
+%---------------------------------------------------------------------
+
+\maketitle
+\pagenumbering{arabic}
+
+%---------------------------------------------------------------------
+% Begin Content
+%---------------------------------------------------------------------
+
+\section{Overview}
+Extreme scale scientific simulations are leading a charge to exascale computation, and data analytics runs the risk of being a bottleneck to scientific discovery. Due to power and I/O constraints, we expect in situ visualization and analysis will be a critical component of these workflows. Options for extreme scale data analysis are often presented as a stark contrast: write large files to disk for interactive, exploratory analysis, or perform in situ analysis to save detailed data about phenomena that a scientists knows about in advance. We present a novel framework for a third option – a highly interactive, image-based approach that promotes exploration of simulation results, and is easily accessed through extensions to widely used open source tools. This in situ approach supports interactive exploration of a wide range of results, while still significantly reducing data movement and storage.
+
+More information about the overall design of Cinema is available in the paper, \textit{An Image-based Approach to Extreme Scale In Situ Visualization and Analysis}\cite{cinemaSC14}, which is available at the following link:
+
+\begin{center}
+\texttt{https://datascience.lanl.gov/data/papers/SC14.pdf}
+\end{center}
+
+A Cinema database is a collection of data that supports this image-based approach to interactive data exploration. It is a set of images and associated metadata, and is defined and an example given in the following sections.
+
+\subsection{Use Cases}
+A Cinema Database supports the following three use cases:
+\begin{enumerate}
+\item Searching/querying of meta-data and samples. Samples can be searched purely on metadata, on image content, on position, on time, or on a combination of all of these.
+\item Interactive visualization of sets of samples.
+\item Playing interactive visualizations, allowing the user on/off control of elements in the visualization.
+\end{enumerate}
+
+
+\subsection{Cinema is Implementation Agnostic}
+The Cinema Database is implementation agnostic. This database specification separates the metadata description of a set of images from the implementation of how these images are stored. In particular, if the images for a specific instance of a database are stored on disk, the design of the directory structure, metadata files, and image filenames on disk is entirely up to the person writing the data. Instead, this specification expects a database of URIs that maps metadata to data products required by the specification.
+
+\section{The Cinema \Composite Specification}
+A cinema database is a set of precomputed visualization samples that can be queried and interactively viewed. This document describes release \CinemaSpecVersion of the Cinema \Composite Database, in which image constituents are stored instead of pre-rendered images. The constituent images are inputs to a deferred rendering algorithm which allows the user to control which objects are in view and how each is colored. A separate document \cite{cinemaSimpleFileSpec} specifies a \textit{Simple} Cinema Database, which contain a fixed set of pre-rendered images for a fixed set of combinations of visualization operations.
+
+Cinema is independent of any one specific visualization platform. Any system that can save images while varying a defined set of parameters can produce \textit{Simple} Cinema Databases. Any system that can do the above and produce depth and other component images of isolated objects in the scene can produce \Composite Cinema Databases.
+
+A Cinema \Composite database is either a set of images of type \Simple or type \Composite. As noted before, the specification for Simple Databases can be found in \cite{cinemaSimpleFileSpec}.
+
+Dimensions of freedom for databases:
+
+\begin{itemize}
+\item Composable or non-composable
+\item Number of composable elements
+\item Dynamic or fixed colormap
+\item Camera position
+\end{itemize}
+
+A \Composite database is a collection of results sampled by a set of visualization parameters. Visualization parameters can be created for any control that the user might have in a traditional visualization session. Examples include isosurfaces, slice planes and viewpoint. Cinema viewing applications give the user a control for each parameter setting and display the corresponding precomputed results, as if the user had made the same choices in a traditional visualization tool.
+
+Examples of typical parameters in a cinema database are:
+\begin{itemize}
+\item \textbf{Time}. Time varying data can be sampled at arbitrary points along the temporal domain.
+\item \textbf{Camera positions}. In a static camera the position and orientation is fixed. In a spherical camera the position varies over a set of positions centered around a chosen focal point. More complicated camera tracks are possible. There is sufficient information in the cinema database to determine the world space camera position for each image.
+\item Zero or more \textbf{operators}, such as clipping plane and isocontour samples along their respective ranges. Each result is sampled and saved in isolation from all others with nothing else visible in the scene. In a viewing application, the user can choose any number of these samples and see them rendered together with correct occlusion culling.
+\item \textbf{Color} components as described next.
+\end{itemize}
+
+In a Cinema workflow, the application producing a Cinema Database creates a set of image constituents for each sample in the parameter space. These image constituents can be:
+\begin{itemize}
+\item \textbf{Depth} image. This encodes a depth value for every pixel, relative to the camera. Required for compositing.
+\item \textbf{Luminance} image. This encodes a rendered shading brightness for each pixel. Required for lighting to be included in the final rendering
+\item \textbf{Color} image. This encodes a standard RGB value for each pixel - the result of rendering the viewpoint from the camera.
+\item \textbf{Value} image. This encodes an arbitrary array value associated with the data that is visualized at each pixel. Required if the final rendering is to be recolored.
+\end{itemize}
+
+It is important to note that not all image constituents must be present. Because Cinema viewing applications combine these components together to produce pictures on demand for the user, the final result is dependent upon what image constituents are available. Examples include:
+\begin{itemize}
+\item If a \textit{depth} image is available, compositing is possible.
+\item If a \textit{float} image is available, the final rendering can be recolored.
+\item If a \textit{luminance} image is available, the final rendering can include a lighting effect.
+\item If only a \textit{color} image is available, the final rendering cannot be recolored.
+\end{itemize}
+
+In addition to the sampled data, a cinema database contains metadata that describes what the samples are, how they are stored and how they can be used. It must:
+\begin{itemize}
+\item identify the specific format (version number and content type) of the store,
+\item enumerate the entire set of parameters that are explorable in the database,
+\item map parameter value combinations to storage locations,
+\item define the type (depth image, color image, value rendered image, ...) of each image stored in the database,
+\item define the storage format (jpeg encoded buffer, png encoded buffer, raw float binary buffer, text file, etc...) of each image stored in the database,
+\item describe relationships between parameters.
+\end{itemize}
+
+Relationships between parameters are included because in a visualization session some parameters are constrained by others. A scene with two unrelated objects in it could have entirely different sets of arrays for each one of them and thus the choice of colors to colormap by depends on the choice of object displayed. Relationships turn otherwise order independent options into a graph of parent child relationships.
+
+Parameter constraints and the necessity to record depth information along with standard color images are the distinguishing features between cinema composite databases and cinema simple databases.
+
+\section{Outline of a Cinema Composite Database schema in JSON data format}
+We now describe a JSON file schema developed to hold the metadata for a cinema database. The JSON file serves to impose structure on the collection of results.
+
+\subsection{Header information}
+                    
+This is required database header information, and values must be as defined below.
+
+\begin{verbatim}
+"type" : composite,
+"version" : "0.0",
+"metadata": {
+    "type": "composite-image-stack",
+    "store_type": <one of ["FS" or "SFS"]>
+},
+\end{verbatim}
+
+\subsection{name\_pattern}
+
+For FileStore type databases, this string maps parameter values to filenames for samples. It must be a path relative to the location of the <database>.json file.
+
+\begin{verbatim}
+"name_pattern" : <valid file path with substitutions>                   
+Ex: "name_pattern" = "{time}/{phi}/{theta}/image.png" (several subdirectories)
+    "name_pattern" = "{time}_{phi}_{theta}_image.png" (all images in one directory)
+\end{verbatim}
+
+The filename extension (.png, .jpg, etc) determines the default type of data of items held in the store. Items in the store with an argument that has a "types" entry ignore the extension and use their own. For example a 'depth' type image is not well suited to a '.png' file, so for depth images cinema is free to use a different format, such as '.im'.
+
+Because of the nature of parameter relationships, the pattern is only unique up to the point of constrained arguments. For constrained arguments the actual file path begins with that described in the name\_pattern string. Directory and filenames for dependent parameters are then appended using the convention of "name=value/" directory names.
+
+\subsection{arguments and associations}
+                    
+The rest of the file defines the visualization parameters. Here we define the set of parameters, or 'arguments' and the set of valid values for each one. Arguments have the following form:
+                
+\subsubsection{arguments}
+
+\begin{verbatim}
+<string>: {
+    "default": <value>,
+    "label": <string>,
+    "type": <one of ["range", "list", “option”]>,
+    "values": [ list of unique values ],
+    <optionally “types”: [ list of one of [“rgb”, “depth”] for each value] >
+} 
+\end{verbatim}
+
+The types entry defines what image constituent the resulting sample is.
+
+\subsubsection{associations}
+\begin{verbatim}
+<name1> : {
+    <name2> : [list of permissible values for name2 that enable name1], 
+}
+\end{verbatim}
+
+
+\section{Example}
+This example is based on the above JSON schema outline.                 
+\begin{verbatim}
+{
+    "arguments": {
+        "color": {
+            "default": "white",
+            "isfield": "yes",
+            "label": "color",
+            "type": "hidden",
+            "types": [
+                "rgb",
+                "depth",
+                "rgb"
+            ],
+            "values": [
+                "white",
+                "depth",
+                "red"
+            ]
+        },
+        "color2": {
+            "default": "white",
+            "isfield": "yes",
+            "label": "color2",
+            "type": "hidden",
+            "types": [
+                "rgb",
+                "depth",
+                "rgb"
+            ],
+            "values": [
+                "white",
+                "depth",
+                "red"
+            ]
+        },
+        "contour": {
+            "default": 0.26539633572101595,
+            "islayer": "yes",
+            "label": "contour",
+            "type": "option",
+            "values": [
+                0.26539633572101595,
+                0.3826981753110885,
+                0.5000000149011612,
+                0.6173018544912339,
+                0.7346036940813064
+            ]
+        },
+        "object": {
+            "default": "contour",
+            "islayer": "yes",
+            "label": "object",
+            "type": "option",
+            "values": [
+                "contour",
+                "slice"
+            ]
+        },
+        "phi": {
+            "default": 0,
+            "label": "phi",
+            "type": "range",
+            "values": [
+                0,
+                50,
+                100,
+                150
+            ]
+        },
+        "slice": {
+            "default": 0.1,
+            "islayer": "yes",
+            "label": "slice",
+            "type": "option",
+            "values": [
+                0.1,
+                0.3,
+                0.5,
+                0.7,
+                0.9
+            ]
+        },
+        "theta": {
+            "default": -180,
+            "label": "theta",
+            "type": "range",
+            "values": [
+                -180,
+                -130,
+                -80,
+                -30,
+                20,
+                70,
+                120,
+                170
+            ]
+        }
+    },
+    "associations": {
+        "color": {
+            "contour": [
+                0.26539633572101595,
+                0.3826981753110885,
+                0.5000000149011612,
+                0.6173018544912339,
+                0.7346036940813064
+            ]
+        },
+        "color2": {
+            "slice": [
+                0.1,
+                0.3,
+                0.5,
+                0.7,
+                0.9
+            ]
+        },
+        "contour": {
+            "object": "contour"
+        },
+        "slice": {
+            "object": "slice"
+        }
+    },
+    "metadata": {
+        "type": "parametric-image-stack"
+    },
+    "name_pattern": "{phi}_{theta}_{object}.jpg"
+}
+\end{verbatim}
+                    
+
+
+\bibliography{bib}{}
+\bibliographystyle{unsrt}
+
+
+\end{document}
