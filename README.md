@@ -36,7 +36,6 @@ Please mail cinema-info@lanl.gov with any questions.
 
 # Acknowledgements
 Cinema is a research project managed by the 
-(http://datascience.dsscale.org "Data Visualization at Scale")
-team at
-Los Alamos National Lab 
+[Data Science at Scale Team](http://datascience.dsscale.org) 
+team at Los Alamos National Lab 
 
