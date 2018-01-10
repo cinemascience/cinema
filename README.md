@@ -35,6 +35,7 @@ The Cinema toolkit consists of the following components:
 Please mail cinema-info@lanl.gov with any questions.
 
 # Acknowledgements
-Cinema is a research project managed by the Data Visualization at Scale team at
-Los Alamos National Lab (http://datascience.dsscale.org)
+Cinema is a research project managed by the [Data Visualization at Scale] (http://datascience.dsscale.org)
+team at
+Los Alamos National Lab 
 
