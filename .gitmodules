@@ -4,3 +4,6 @@
 [submodule "viewers/cinema_explorer"]
 	path = viewers/cinema_explorer
 	url = https://github.com/lanl/cinema_explorer
+[submodule "viewers/cinema_simpleviewers"]
+	path = viewers/cinema_simpleviewers
+	url = https://github.com/lanl/cinema_simpleviewers
