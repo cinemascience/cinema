@@ -1,3 +1,6 @@
 [submodule "writers/cinema_lib"]
 	path = writers/cinema_lib
 	url = git@github.com:lanl/cinema_lib.git
+[submodule "viewers/cinema_explorer"]
+	path = viewers/cinema_explorer
+	url = https://github.com/lanl/cinema_explorer
