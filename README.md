@@ -44,8 +44,9 @@ The Cinema toolkit consists of the following components:
 
 Please note that this repository contains submodules, so you will have to update
 those modules after cloning:
-
-  git submodule update --init --recursive
+````
+git submodule update --init --recursive
+````
 
 # Cinema mailing list
 
