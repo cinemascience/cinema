@@ -40,6 +40,13 @@ The Cinema toolkit consists of the following components:
 - `cinema_lib`, the cinema python library and `cinema` command line tool
 - `specs`, a set of specifications for Cinema databases
 
+# Submodules in this repository 
+
+Please note that this repository contains submodules, so you will have to update
+those modules after cloning:
+
+  git submodule update --init --recursive
+
 # Cinema mailing list
 
 Please mail cinema-info@lanl.gov with any questions.
