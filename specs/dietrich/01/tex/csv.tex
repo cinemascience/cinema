@@ -4,7 +4,7 @@ more external files. These referenced files can be of any file type or file
 extension.  Note that \textit{new data can be added to or deleted from the
 \texttt{\small csv} file or files can be added to or removed from the database
 i.e., the \texttt{\small database\_name.csv} directory, as long as the 
-following requirements are met.} The specification for the Spec D v1.1
+following requirements are met.} The specification for the Spec D v\version
 \texttt{\small csv} follows (differing from v1.0 in points 5 and 9).
 
 \begin{enumerate}
@@ -18,21 +18,22 @@ for the columns.
 other non-\texttt{\small FILE} columns can occur after the first
 \texttt{\small FILE} columns (\texttt{\small FILE} columns are always last). 
 \item All other lines in the file are data rows.
-\item The first data line (second line in the file) is \textbf{required}.
+% \item The first data line (second line in the file) is \textbf{required}.
+\item There must be at least one data line in the file.
 \item Each data line is populated with an equal number of values
 (columns) as the header (i.e., the same number of separating commas per row).
 \item In the data lines:
 \begin{enumerate}
 \item All data values must be \textbf{floats} (floating-point values), 
 \textbf{integers}, \textbf{strings}, or \textbf{empty} (missing) values.
-\item Missing (\textbf{empty}) values may not occur in the first data row 
-(second line).
+% \item Missing (\textbf{empty}) values may not occur in the first data row 
+% (second line).
 \item All data values in \texttt{\small FILE} columns are \textbf{required}
 to be \textbf{strings} or \textbf{empty} values.
 \item All other columns are \textbf{required} to have the same value type for
 all data rows, either \textbf{float}, \textbf{integer}, or \textbf{string}.
 \item A column may not have an \textbf{empty} value type, but \textbf{empty} 
-values may appear in any column and data row (except for the first data row). 
+values may appear in any column and data row.% (except for the first data row). 
 \item Empty values (i.e., missing values, \texttt{\small NULL}s, or 
 \texttt{\small None}s) are represented by an empty string.  
 \item A literal empty \textbf{string} is represented by two double-quotes: 
@@ -61,7 +62,29 @@ and may ignore other file formats.
 
 \noindent
 \textbf{Example 1} This type of \texttt{\small data.csv} file is 
-self-contained with no \texttt{\small FILE} columns.
+self-contained with no \texttt{\small FILE} columns. It shows the one 
+change made for this version of the specification: allowing 
+NULL values in the first line of the file:
+
+\begin{verbatim}
+    timestep,time value,x,y,z,category
+    1,,1.0,,1.2,one
+    2,0.2,2.0,2.1,2.2,two
+\end{verbatim}
+
+\noindent
+In this case, the Cinema database would contain the following files,
+assuming that {\em database\_name} is the name of the database.
+
+\begin{verbatim}
+    database_name.cdb/
+        data.csv
+\end{verbatim}
+
+\noindent
+\textbf{Example 2} This type of \texttt{\small data.csv} file is 
+self-contained with no \texttt{\small FILE} columns. It shows a set of fully
+populated data rows (no NULL values).
 
 \begin{verbatim}
     timestep,time value,x,y,z,category
@@ -81,7 +104,7 @@ assuming that {\em database\_name} is the name of the database.
 \end{verbatim}
 
 \noindent
-\textbf{Example 2} This \texttt{\small data.csv} example shows the 
+\textbf{Example 3} This \texttt{\small data.csv} example shows the 
 \texttt{\small FILE} keyword on the last column and the corresponding
 POSIX file paths.
 
@@ -108,7 +131,7 @@ In this case, the Cinema database would contain the following files:
 \end{verbatim}
 
 \noindent
-\textbf{Example 3} This \texttt{\small data.csv} example shows an example
+\textbf{Example 4} This \texttt{\small data.csv} example shows an example
 of NULL, NaN, and empty string values in the last row.
 
 \begin{verbatim}
@@ -122,10 +145,10 @@ of NULL, NaN, and empty string values in the last row.
 
 \noindent
 In this case, the Cinema database would contain the same files as 
-Example 2. \\
+Example 3. \\
 
 \noindent
-\textbf{Example 4} This \texttt{\small data.csv} example shows multiple
+\textbf{Example 5} This \texttt{\small data.csv} example shows multiple
 \texttt{\small FILE}s on the last columns, and the corresponding POSIX file 
 paths. Note that the file columns are named \texttt{\small FILE}
 and \texttt{\small FILE plot}, in this example.
@@ -159,7 +182,7 @@ In this case, the Cinema database would contain the following files:
 \end{verbatim}
 
 \noindent
-\textbf{Example 5} This \texttt{\small data.csv} example shows string
+\textbf{Example 6} This \texttt{\small data.csv} example shows string
 quotation (rfc4180) to create a single text vector column from the
 {\em x}, {\em y}, and {\em z} columns.
 
@@ -173,7 +196,37 @@ quotation (rfc4180) to create a single text vector column from the
 \end{verbatim}
 
 \noindent
-In this case, the Cinema database would contain the same files as Example 4.
+In this case, the Cinema database would contain the same files as Example 5. \\
+
+\noindent
+\textbf{Example 7} This example shows a database with multiple data artifacts,
+and demonstrates the reason for the change made to the specification. 
+
+\begin{verbatim}
+    timestep,phi,theta,FILE,FILE dataset
+    1,45.0,45.0,01_45.png,
+    1,90.0,90.0,01_90.png,
+    2,45.0,45.0,02_45.png,
+    2,90.0,90.0,02_90.png,
+    1,,,,subset_01.vti
+\end{verbatim}
+
+\noindent
+In this case, a series of \texttt{\small png} files have been saved at different
+camera angles at two different timesteps. In addition, a \texttt{\small vti}
+file has been saved for the first timestep. There are NULL values on each line,
+indicating that the data artifacts (the FILE columns) are associated with
+different sets of parameters. The files would be:
+
+\begin{verbatim}
+    database_name.cdb/
+        data.csv
+        01_45.png
+        01_90.png
+        02_45.png
+        02_90.png
+        subset_01.vti
+\end{verbatim}
 
 \subsubsection{Data Types}
 
@@ -182,7 +235,7 @@ columns.  We assume that built-in parsing in modern languages, such as in
 Python and JavaScript, is available and can be used to test, parse, and convert 
 values from the \texttt{\small csv} file.
 
-In our previous {\bf Example 1}, the types of the columns are 
+In our previous examples {\bf 1} and {\bf 2}, the types of the columns are 
 \textbf{integer}, four columns of \textbf{float}, and \textbf{string}. Parsing
 precedence for determining the type of a column is: \textbf{integer},
 \textbf{float}, \textbf{string}. That is, if a column in the first data row

@@ -1,15 +1,7 @@
-Version 1.1 supersedes version 1.0, and v1.0 files are compliant v1.1 files.
-Though, v1.1 files are not backwards compatible with v1.0.  
-The following are the list of changes have been made from v1.0 to v1.1:
+Version 1.2 supersedes version 1.1. All v1.1 files are compliant v1.2 files, but
+v1.2 files are not backwards compatible with v1.1. The following are the changes
+that have been made from v1.1 to v1.2:
 
 \begin{itemize}
-\item More than one \texttt{\small FILE} column can be present in the header, 
-  representing more than one file per row.
-\item \texttt{\small FILE} columns only need to start with the sub-string 
-  \texttt{\small FILE}.
-\item Data columns can be {\bf strings}, {\bf integers}, {\bf empty} values 
-  (\texttt{\small NULL}) in addition to {\bf floats}. 
-\item Clarification on types and {\bf string} value interpretation.
-\item Removal of {\bf Type I} and {\bf Type II} distinction of 
-  \texttt{\small csv} files.
+\item The first data line can contain (\texttt{\small NULL}) values.
 \end{itemize}

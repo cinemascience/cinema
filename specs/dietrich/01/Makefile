@@ -3,7 +3,7 @@ LATEX    = pdflatex
 BIBTEX   = bibtex
 SRC      = *.tex tex/* img/*
 BIBS     = bib/*.bib
-VERSION  = 011
+VERSION  = 012
 REPORT   = cinema_$(DOCUMENT)_v$(VERSION)
 
 all: $(REPORT).pdf
