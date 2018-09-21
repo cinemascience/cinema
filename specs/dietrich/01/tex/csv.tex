@@ -26,34 +26,33 @@ other non-\texttt{\small FILE} columns can occur after the first
 \begin{enumerate}
 \item All data values must be \textbf{floats} (floating-point values), 
 \textbf{integers}, \textbf{strings}, or \textbf{empty} (missing) values.
-% \item Missing (\textbf{empty}) values may not occur in the first data row 
-% (second line).
-\item All data values in \texttt{\small FILE} columns are \textbf{required}
-to be \textbf{strings} or \textbf{empty} values.
-\item All other columns are \textbf{required} to have the same value type for
+\item All columns are \textbf{required} to have the same value type for
 all data rows, either \textbf{float}, \textbf{integer}, or \textbf{string}.
-\item A column may not have an \textbf{empty} value type, but \textbf{empty} 
-values may appear in any column and data row.% (except for the first data row). 
-\item Empty values (i.e., missing values, \texttt{\small NULL}s, or 
+\item Data values in \texttt{\small FILE} columns are \textbf{required}
+to be \textbf{strings}.
+\item \textbf{Empty} values may appear in any column and data row.
+\item \textbf{Empty} values (i.e., missing values, \texttt{\small NULL}s, or 
 \texttt{\small None}s) are represented by an empty string.  
 \item A literal empty \textbf{string} is represented by two double-quotes: 
-\texttt{""}, which is different from an \textbf{empty} (missing) value or 
+\texttt{""}, which is different from both an \textbf{empty} (missing) value or 
 \textbf{NaN}. 
 \item The \textbf{string} values in \texttt{\small FILE} columns represent
 a POSIX file path relative to the base directory (the \texttt{\small name.cdb} 
-path) of the Cinema database. This is the location of the file data for that 
+path) of the Cinema database. This is the location of file data for that 
 row.
 \item The files can be of any type, where the format is indicated by MIME name 
-extension.
+  extension, e.g., \textbf{.png}, \textbf{.vti}, \textbf{.txt}, etc.
 \begin{enumerate}
-\item Consumers of Spec D databases (readers, viewers, and analytics tools) 
-are not required to display or read all formats. This is handled on a 
-case-by-case basis for the use cases supported by the tool. Tools must 
-provide appropriate error messages indicating when file formats are not 
-supported. 
+\item Consumers of Spec D databases (readers, viewers, and analytics tools) are
+not required to display or read all file formats. This is handled on a
+case-by-case basis, for the specific use cases, supported by each
+implementation.  Implementations must provide appropriate error messages
+indicating when particular file formats are not supported. 
+\begin{enumerate}
 \item For clarity, we note here that browser-based viewers of Spec D are 
 required to display the common web image file formats of JPEG, PNG, and GIF, 
 and may ignore other file formats.
+\end{enumerate}
 \end{enumerate}
 \end{enumerate}
 \end{enumerate}
@@ -62,8 +61,8 @@ and may ignore other file formats.
 
 \noindent
 \textbf{Example 1} This type of \texttt{\small data.csv} file is 
-self-contained with no \texttt{\small FILE} columns. It shows the one 
-change made for this version of the specification: allowing 
+self-contained with no \texttt{\small FILE} columns. It shows the 
+change made for this version of the specification from 1.1 to 1.2, allowing 
 NULL values in the first line of the file:
 
 \begin{verbatim}
@@ -200,7 +199,7 @@ In this case, the Cinema database would contain the same files as Example 5. \\
 
 \noindent
 \textbf{Example 7} This example shows a database with multiple data artifacts,
-and demonstrates the reason for the change made to the specification. 
+and demonstrates the reason for the change made to the specification in 1.2. 
 
 \begin{verbatim}
     timestep,phi,theta,FILE,FILE dataset
@@ -230,39 +229,47 @@ different sets of parameters. The files would be:
 
 \subsubsection{Data Types}
 
-The second line (first data line) is used to determine the data type of the
-columns.  We assume that built-in parsing in modern languages, such as in
-Python and JavaScript, is available and can be used to test, parse, and convert 
-values from the \texttt{\small csv} file.
+The first \textbf{non-empty} value is used to determine the data type of a
+column.  We assume that built-in parsing in modern languages is available and
+can be used to test, parse, and convert values from the \texttt{\small csv}
+file.
 
 In our previous examples {\bf 1} and {\bf 2}, the types of the columns are 
-\textbf{integer}, four columns of \textbf{float}, and \textbf{string}. Parsing
-precedence for determining the type of a column is: \textbf{integer},
-\textbf{float}, \textbf{string}. That is, if a column in the first data row
-(second line) parses as an \textbf{integer}, it is an \textbf{integer}
-column, otherwise if it parses as a \textbf{float}, it is a \textbf{float}
-column, otherwise it is a \textbf{string} column. This does mean that
-if you have floating-point values that are integers, they need to be
-written as floating point in the second line (first data row) to be able to 
-type a column correctly, i.e., a 0 must be stored as 0.0.
+\textbf{integer}, four columns of \textbf{float}, and \textbf{string}. For
+the case of example {\bf 1}, determining the data types for columns 2 and 4 
+are deferred until the second row is parsed. All other subsequent values must 
+be the same data type or \textbf{empty}.
 
-For strings:
+Parsing precedence for determining the type of a column is: \textbf{integer},
+\textbf{float}, \textbf{string}. That is, if the first non-empty value in a
+column parses as an \textbf{integer}, it is an \textbf{integer} column,
+otherwise if it parses as a \textbf{float}, it is a \textbf{float} column,
+otherwise it is a \textbf{string} column. \textit{In particular, this means
+that floating-point values that are integers, must be written as floating point
+value: i.e., they must contain a decimal point.} For example, a value of 0 in a
+floating point column must be represented as 0.0.
+
+Further explanation on particular values:
 \begin{itemize}
 \item \texttt{\small nan}, \texttt{\small NaN}, and \texttt{NAN} (or any
-  combination of capitalization) are valid values, and should be handled
-  by any readers and viewers according to the type of the column. If
-  these are present in the first data row, the column is parsed as 
+  combination of capitalization) are valid values, and should be handled by any
+  implementation according to the type of the column, either \textbf{floats}
+  or \textbf{strings}. If these are present in the \textit{first}
+  \textbf{non-empty} data row, then data type of the column should be
   \textbf{float} values. \texttt{\small NaN} is not a valid \textbf{integer}
-  value for any row.
-\item Whitespace is not consumed (stripped) before and after comma separators.
-  This is part of the rfc4180 specification. Whitespace {\em cannot} appear
-  before or after a comma that has a double-quoted value (an invalid rfc4180).
+  value for \textit{any} row.
+\item Whitespace is not and should not be consumed (stripped) before and after
+  comma separators.  This is part of the rfc4180 specification. Whitespace {\em
+  cannot} appear before or after a comma that has a double-quoted value, as
+  that is an invalid rfc4180 file.
 \item Commas and double-quotes are special characters that require 
   enclosing the value in double-quotes. A literal double-quote must be preceded 
   by another double-quote: e.g., \texttt{\small """"} is the value 
-  \texttt{\small "} (please refer to rfc4180).
+  \texttt{\small "}. (Please refer to rfc4180.)
 \item A literal empty string must be represented as \texttt{\small ""}, as an 
-  empty string (no value between two commas, or before the first comma
-  or after the last comma) is \texttt{\small NULL} (empty value).
+  empty string (no text between two commas, or before the first comma
+  or after the last comma) is \texttt{\small NULL} (empty value). Whitespace
+  between commas will be interpreted as the whitespace \textbf{not} as an
+  empty string or empty value.
 \end{itemize}
 
