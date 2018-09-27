@@ -21,8 +21,7 @@ situ analysis to save detailed data about phenomena that a scientists knows
 about in advance. With Cinema, we have developed a novel framework for a third option – a highly
 interactive, compact and scalable way to explore data.
 
-
-# Cinema components
+# The Cinema Ecosystem
 
 The Cinema ecosystem consists of database specifications, writers,
 [viewers](http://cinemaviewer.org) and algorithms. Among the many use cases for
@@ -34,11 +33,25 @@ Cinema are two common ones:
 - You can write your own database, using your current data, by referencing one
   of the database specifications in this repository.
 
+# Cinema Open Source releases
+
+All of the Cinema open source code can be found under the `cinemascience` group at
+`https://github.com/cinemascience`. This repository collects the officially released
+code. Other repositories under the `cinemascience` organization are considered
+*experimental*, and are not supported as production code by the Cinema team.
+
+# Cinema Release 
+
+
 The Cinema toolkit consists of the following components:
 
-- `cinema_explorer`, a browser-based cinema viewer
-- `cinema_lib`, the cinema python library and `cinema` command line tool
-- `specs`, a set of specifications for Cinema databases
+- `specs/`, a set of specifications for Cinema databases
+- `viewers/`
+    - `cinema_components`, a set of components that can be used to build browser-based cinema viewers 
+    - `cinema_explorer`, the main browser-based cinema viewer, based on `cinema_components`
+    - `cinema_compare`, a simple comparison viewer for one or more databases 
+- `writers/`
+    - `cinema_lib`, the cinema python library and `cinema` command line tool
 
 # Submodules in this repository 
 
@@ -50,7 +63,7 @@ git submodule update --init --recursive
 
 # Cinema mailing list
 
-Please mail cinema-info@lanl.gov with any questions.
+Please mail `cinema-info@lanl.gov` with any questions.
 
 # Acknowledgements
 Cinema is a research project managed by the 
