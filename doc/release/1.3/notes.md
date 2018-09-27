@@ -1,4 +1,4 @@
-# Cinema Release Notes v1.0
+# Cinema Release Notes v1.3
 
 This release is targeted at updating the Cinema toolkit to handle more types of files in Cinema databases.
 It includes updates to the Cinema specification, previously released Cinema code, and additions to the
