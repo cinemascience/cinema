@@ -52,4 +52,8 @@ examples and test plans in each submodule for more information on changes.
 The following submodules have been added for this release:
     - `cinema_compare`, a simple comparison viewer for one or more databases 
 
+## Third Party Test Plans
 
+One component of the Cinema Ecosystem is third party applications that read, write, analyze and view Cinema databases. With this release, we include test plans for important third party applications so that we can continuously improve our releases.
+
+- [ParaView](testplans/paraview/testplan.md)
