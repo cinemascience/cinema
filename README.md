@@ -43,7 +43,7 @@ code. Other repositories under the `cinemascience` organization are considered
 # Cinema Release 
 
 
-The Cinema toolkit consists of the following components:
+The Cinema toolkit consists of the following directories and repositories. Version information, test plans and documentation can be found in the individual repositories: 
 
 - `specs/`, a set of specifications for Cinema databases
 - `viewers/`
