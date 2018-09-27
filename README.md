@@ -42,7 +42,7 @@ code. Other repositories under the `cinemascience` organization are considered
 
 # Cinema Release 
 
-*[Current Release Notes](doc/release/1.0/notes.md)*
+**[Current Release Notes](doc/release/1.0/notes.md)**
 
 The Cinema toolkit consists of the following directories and repositories. Version information, test plans and documentation can be found in the individual repositories: 
 
