@@ -1,0 +1,66 @@
+\noindent
+\textbf{Example 1} A Cinema database containing a table of data, but no references to data files.
+
+\begin{verbatim}
+    database_name.cdb/
+        data.csv
+\end{verbatim}
+
+This \texttt{\small data.csv} file contains:
+
+\begin{verbatim}
+    timestep,time value,x,y,z,category
+    1,0.3,1.0,1.1,1.2,one
+    2,0.2,2.0,2.1,2.2,two
+\end{verbatim}
+
+\noindent
+\textbf{Example 2} A Cinema database that includes metatdata, and references to local data files.
+
+\begin{verbatim}
+    database_name.cdb/
+        data.csv
+        results_01.png
+        results_02.png
+\end{verbatim}
+
+This \texttt{\small data.csv} file contains:
+
+\begin{verbatim}
+    timestep,time value,x,y,z,results
+    1,0.3,1.0,1.1,1.2,results_01.png
+    2,0.2,2.0,2.1,2.2,results_02.png
+\end{verbatim}
+
+\noindent
+\textbf{Example 3} A Cinema database that includes metatdata, and references to local data files not included in the Cinema database directory.
+
+\begin{verbatim}
+    database_name.cdb/
+        data.csv
+\end{verbatim}
+
+This \texttt{\small data.csv} file contains:
+
+\begin{verbatim}
+    timestep,time value,x,y,z,results
+    1,0.3,1.0,1.1,1.2,../../results-001/results_01.png
+    2,0.2,2.0,2.1,2.2,../../results-001/results_02.png
+\end{verbatim}
+
+\noindent
+\textbf{Example 4} A Cinema database that includes metatdata, and references to remote data files.
+
+\begin{verbatim}
+    database_name.cdb/
+        data.csv
+\end{verbatim}
+
+This \texttt{\small data.csv} file contains:
+
+\begin{verbatim}
+    timestep,time value,x,y,z,category,FILE
+    1,0.1,1.0,1.1,1.2,one,https://github.com/cinemascience/cinema/example_01.vti
+    2,0.2,2.0,2.1,2.2,two,https://github.com/cinemascience/cinema/example_02.vti
+\end{verbatim}
+

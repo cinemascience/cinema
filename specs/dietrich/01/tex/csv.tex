@@ -10,222 +10,47 @@ following requirements are met.} The specification for the Spec D v\version
 \begin{enumerate}
 \item The file is UTF-8 encoded.
 \item The file follows the specification rfc4180 \cite{rfc4180}, governing how
-fields are defined.
-\item The first line of the file (header) is \textbf{required}.  
-\item Header values are unique non-empty \textbf{strings} that are the labels 
-for the columns.
-\item The last header values may be or start with \texttt{\small FILE}. No 
-other non-\texttt{\small FILE} columns can occur after the first
-\texttt{\small FILE} columns (\texttt{\small FILE} columns are always last). 
-\item All other lines in the file are data rows.
-% \item The first data line (second line in the file) is \textbf{required}.
-\item There must be at least one data line in the file.
-\item Each data line is populated with an equal number of values
-(columns) as the header (i.e., the same number of separating commas per row).
-\item In the data lines:
+      fields are defined.
+\item The first line of the file (header) is \textbf{required}. 
 \begin{enumerate}
-\item All data values must be \textbf{floats} (floating-point values), 
-\textbf{integers}, \textbf{strings}, or \textbf{empty} (missing) values.
-\item All columns are \textbf{required} to have the same value type for
-all data rows, either \textbf{float}, \textbf{integer}, or \textbf{string}.
-\item Data values in \texttt{\small FILE} columns are \textbf{required}
-to be \textbf{strings}.
-\item \textbf{Empty} values may appear in any column and data row.
-\item \textbf{Empty} values (i.e., missing values, \texttt{\small NULL}s, or 
-\texttt{\small None}s) are represented by an empty string.  
-\item A literal empty \textbf{string} is represented by two double-quotes: 
-\texttt{""}, which is different from both an \textbf{empty} (missing) value or 
-\textbf{NaN}. 
-\item The \textbf{string} values in \texttt{\small FILE} columns represent
-a POSIX file path relative to the base directory (the \texttt{\small name.cdb} 
-path) of the Cinema database. This is the location of file data for that 
-row.
-\item The files can be of any type, where the format is indicated by MIME name 
-  extension, e.g., \textbf{.png}, \textbf{.vti}, \textbf{.txt}, etc.
+    \item Header values are unique non-empty \textbf{strings} that are the 
+          labels for the columns.
+    \item The last header values may be or start with \texttt{\small FILE}. No 
+          other non-\texttt{\small FILE} columns can occur after the first
+          \texttt{\small FILE} columns (\texttt{\small FILE} columns are 
+          always last). 
+\end{enumerate}
+
+\item The remaining lines in the file are data rows.
+
 \begin{enumerate}
-\item Consumers of Spec D databases (readers, viewers, and analytics tools) are
-not required to display or read all file formats. This is handled on a
-case-by-case basis, for the specific use cases, supported by each
-implementation.  Implementations must provide appropriate error messages
-indicating when particular file formats are not supported. 
-\begin{enumerate}
-\item For clarity, we note here that browser-based viewers of Spec D are 
-required to display the common web image file formats of JPEG, PNG, and GIF, 
-and may ignore other file formats.
+    \item There must be at least one data row.
+    \item Each data line is populated with an equal number of values
+          (columns) as the header (i.e., the same number of separating commas 
+          per row).
+    \item All data values must be \textbf{floats} (floating-point values), 
+          \textbf{integers}, \textbf{strings}, or \textbf{empty} (missing) 
+          values.
+    \item All columns are \textbf{required} to have the same value type for
+          all data rows, either \textbf{float}, \textbf{integer}, or 
+          \textbf{string}.
+    \item \textbf{Empty} values may appear in any column and data row, are represented by an empty string.  
+    \item A literal empty \textbf{string} is represented by two double-quotes: 
+          \texttt{""}, which is different from both an \textbf{empty} (missing) 
+          value or \textbf{NaN}. 
+    \item A data value representing a file path must be a string containing either 
+          a) a POSIX file path, or b) a URI.
+    \begin{enumerate}
+    \item Files can be of any type, as indicated by MIME name extension, e.g., 
+          \textbf{.png}, \textbf{.vti}, \textbf{.txt}, etc.
+    \end{enumerate}
+% \begin{enumerate}
+% \item Consumers of Spec D databases (readers, viewers, and analytics tools) are not required to display or read all file formats. This is handled on a case-by-case basis, for the specific use cases, supported by each implementation.  Implementations must provide appropriate error messages indicating when particular file formats are not supported. 
+% \begin{enumerate}
+% \item For clarity, we note here that browser-based viewers of Spec D are required to display the common web image file formats of JPEG, PNG, and GIF, and may ignore other file formats.
+% \end{enumerate}
 \end{enumerate}
 \end{enumerate}
-\end{enumerate}
-\end{enumerate}
-
-\subsubsection{Examples}
-
-\noindent
-\textbf{Example 1} This type of \texttt{\small data.csv} file is 
-self-contained with no \texttt{\small FILE} columns. It shows the 
-change made for this version of the specification from 1.1 to 1.2, allowing 
-NULL values in the first line of the file:
-
-\begin{verbatim}
-    timestep,time value,x,y,z,category
-    1,,1.0,,1.2,one
-    2,0.2,2.0,2.1,2.2,two
-\end{verbatim}
-
-\noindent
-In this case, the Cinema database would contain the following files,
-assuming that {\em database\_name} is the name of the database.
-
-\begin{verbatim}
-    database_name.cdb/
-        data.csv
-\end{verbatim}
-
-\noindent
-\textbf{Example 2} This type of \texttt{\small data.csv} file is 
-self-contained with no \texttt{\small FILE} columns. It shows a set of fully
-populated data rows (no NULL values).
-
-\begin{verbatim}
-    timestep,time value,x,y,z,category
-    1,0.1,1.0,1.1,1.2,one
-    2,0.2,2.0,2.1,2.2,two
-    3,0.3,3.0,3.1,3.2,three
-    4,0.4,4.0,4.1,4.2,four
-\end{verbatim}
-
-\noindent
-In this case, the Cinema database would contain the following files,
-assuming that {\em database\_name} is the name of the database.
-
-\begin{verbatim}
-    database_name.cdb/
-        data.csv
-\end{verbatim}
-
-\noindent
-\textbf{Example 3} This \texttt{\small data.csv} example shows the 
-\texttt{\small FILE} keyword on the last column and the corresponding
-POSIX file paths.
-
-\begin{verbatim}
-    timestep,time value,x,y,z,category,FILE
-    1,0.1,1.0,1.1,1.2,one,img/001.jpg
-    2,0.2,2.0,2.1,2.2,two,img/002.jpg
-    3,0.3,3.0,3.1,3.2,three,data/003.jpg
-    4,0.4,4.0,4.1,4.2,four,data/004.png 
-\end{verbatim}
-
-\noindent
-In this case, the Cinema database would contain the following files:
-
-\begin{verbatim}
-    database_name.cdb/
-        data.csv
-        img/
-            001.jpg
-            002.jpg
-        data/
-            003.jpg
-            004.png
-\end{verbatim}
-
-\noindent
-\textbf{Example 4} This \texttt{\small data.csv} example shows an example
-of NULL, NaN, and empty string values in the last row.
-
-\begin{verbatim}
-    timestep,time value,x,y,z,category,FILE
-    1,0.1,1.0,1.1,1.2,one,img/001.jpg
-    2,0.2,2.0,2.1,2.2,two,img/002.jpg
-    3,0.3,3.0,3.1,3.2,three,data/003.jpg
-    4,0.4,4.0,4.1,4.2,four,data/004.png 
-    ,0.5,,NaN,5.2,"",
-\end{verbatim}
-
-\noindent
-In this case, the Cinema database would contain the same files as 
-Example 3. \\
-
-\noindent
-\textbf{Example 5} This \texttt{\small data.csv} example shows multiple
-\texttt{\small FILE}s on the last columns, and the corresponding POSIX file 
-paths. Note that the file columns are named \texttt{\small FILE}
-and \texttt{\small FILE plot}, in this example.
-
-\begin{verbatim}
-    timestep,time value,x,y,z,category,FILE,FILE plot
-    1,0.1,1.0,1.1,1.2,one,img/001.jpg,plot/a.csv
-    2,0.2,2.0,2.1,2.2,two,img/002.jpg,plot/b.tsv
-    3,0.3,3.0,3.1,3.2,three,data/003.jpg,plot/c.txt
-    4,0.4,4.0,4.1,4.2,four,data/004.png,plot/d.xls
-    ,0.5,,NaN,5.2,"",,
-\end{verbatim}
-
-\noindent
-In this case, the Cinema database would contain the following files:
-
-\begin{verbatim}
-    database_name.cdb/
-        data.csv
-        img/
-            001.jpg
-            002.jpg
-        data/
-            003.jpg
-            004.png
-        plot/
-            a.csv
-            b.tsv
-            c.txt
-            d.xls
-\end{verbatim}
-
-\noindent
-\textbf{Example 6} This \texttt{\small data.csv} example shows string
-quotation (rfc4180) to create a single text vector column from the
-{\em x}, {\em y}, and {\em z} columns.
-
-\begin{verbatim}
-    timestep,time value,"x,y,z",category,FILE,FILE plot
-    1,0.1,"1.0,1.1,1.2",one,img/001.jpg,plot/a.csv
-    2,0.2,"2.0,2.1,2.2",two,img/002.jpg,plot/b.tsv
-    3,0.3,"3.0,3.1,3.2",three,data/003.jpg,plot/c.txt
-    4,0.4,"4.0,4.1,4.2",four,data/004.png,plot/d.xls
-    ,0.5,,"",,
-\end{verbatim}
-
-\noindent
-In this case, the Cinema database would contain the same files as Example 5. \\
-
-\noindent
-\textbf{Example 7} This example shows a database with multiple data artifacts,
-and demonstrates the reason for the change made to the specification in 1.2. 
-
-\begin{verbatim}
-    timestep,phi,theta,FILE,FILE dataset
-    1,45.0,45.0,01_45.png,
-    1,90.0,90.0,01_90.png,
-    2,45.0,45.0,02_45.png,
-    2,90.0,90.0,02_90.png,
-    1,,,,subset_01.vti
-\end{verbatim}
-
-\noindent
-In this case, a series of \texttt{\small png} files have been saved at different
-camera angles at two different timesteps. In addition, a \texttt{\small vti}
-file has been saved for the first timestep. There are NULL values on each line,
-indicating that the data artifacts (the FILE columns) are associated with
-different sets of parameters. The files would be:
-
-\begin{verbatim}
-    database_name.cdb/
-        data.csv
-        01_45.png
-        01_90.png
-        02_45.png
-        02_90.png
-        subset_01.vti
-\end{verbatim}
 
 \subsubsection{Data Types}
 

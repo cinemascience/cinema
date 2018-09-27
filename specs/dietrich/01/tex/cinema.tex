@@ -15,12 +15,7 @@ A Cinema Database supports the following three use cases. Taken together, these 
 \end{enumerate}
 
 \subsection{What is a Cinema Database?}
-A Cinema database is a set of precomputed data artifacts that can be queried and interactively viewed. The user can decide what types of components comprise the database, based on the type of interaction that is desired with the final database.
-A general design philosophy of Cinema is that applications reading and viewing a Cinema database can ignore data and determine which operations to perform. This promotes a wide range of possible interactions with the data - not just the ones imagined by the creator of the database.
+A Cinema database is a set of parameters mapped with a set of data artifacts. The artifacts can be images, grids, csv files - any type of data that can be written to disk.
 
-Previous Cinema database specifications have concentrated on the notion that a database is a set of results sampled by visualization parameters. In this specification, we abstract this to include typical use cases from experiments by scientists. 
-
-A scientist often has a spreadsheet with data about parameters for an experiment. This results in a set of parameters that map to a particular result - a graph, a sensor image, or other image-based data. These are a natural abstraction from previous Cinema databases. Figure \ref{fig:parametersets} shows this mapping of parameter sets to results. A collection of these mappings can be easily expressed in a Cinema database, using this specification. This is detailed in later sections.
-
-\input{tex/fig_parameter_sets}
+A general design philosophy of Cinema is that applications reading and viewing a Cinema database can determine which data to operate on, and which operations to perform. This promotes a wide range of possible interactions with the data - not just the ones imagined by the creator of the database.
 
