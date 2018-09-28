@@ -44,16 +44,20 @@ The following submodules have been updated to accomodate the new specification. 
 examples and test plans in each submodule for more information on changes.
 
 - `viewers/`
-    - `cinema_components`, a set of components that can be used to build browser-based cinema viewers 
     - `cinema_explorer`, the main browser-based cinema viewer, based on `cinema_components`
 - `writers/`
     - `cinema_lib`, the cinema python library and `cinema` command line tool
 
 The following submodules have been **added** for this release:
+
+- `viewers/`
+    - `cinema_components`, a set of components that can be used to build browser-based cinema viewers 
     - `cinema_compare`, a simple comparison viewer for one or more databases.
       This replaces `cinema_simpleviewers` repository.
 
 The following submodules have been **removed** for this release:
+
+- `viewers/`
     - `cinema_simpleviewers` This has been superceded by `cinema_compare`
 
 ## Testing
