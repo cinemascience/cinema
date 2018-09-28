@@ -7,3 +7,6 @@
 [submodule "viewers/cinema_compare"]
 	path = viewers/cinema_compare
 	url = https://github.com/cinemascience/cinema_compare
+[submodule "viewers/cinema_components"]
+	path = viewers/cinema_components
+	url = https://github.com/cinemascience/cinema_components
