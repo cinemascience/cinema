@@ -38,7 +38,9 @@ Cinema are two common ones:
 All of the Cinema open source code can be found under the `cinemascience` group at
 `https://github.com/cinemascience`. This repository collects the officially released
 code. Other repositories under the `cinemascience` organization are considered
-*experimental*, and are not supported as production code by the Cinema team.
+*experimental*, and are not supported as production code by the Cinema team, but 
+are viable projects dedicated either to experimental applications, algorithms or
+viewers.
 
 # Cinema Release 
 
