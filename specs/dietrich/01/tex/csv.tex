@@ -1,9 +1,9 @@
 The main data file for this specification is a Comma Separated Value file that
 has the following requirements.  The last data column(s) may reference one or
 more external files. These referenced files can be of any file type or file
-extension.  Note that \textit{new data can be added to or deleted from the
+extension.  Note that new data can be added to or deleted from the
 \texttt{\small csv} file or files can be added to or removed from the database
-i.e., the \texttt{\small database\_name.csv} directory, as long as the 
+i.e., the \texttt{\small database\_name.csv} directory, as long as the
 following requirements are met.} The specification for the Spec D v\version
 \texttt{\small csv} follows (differing from v1.0 in points 5 and 9).
 
@@ -11,14 +11,14 @@ following requirements are met.} The specification for the Spec D v\version
 \item The file is UTF-8 encoded.
 \item The file follows the specification rfc4180 \cite{rfc4180}, governing how
       fields are defined.
-\item The first line of the file (header) is \textbf{required}. 
+\item The first line of the file (header) is \textbf{required}.
 \begin{enumerate}
-    \item Header values are unique non-empty \textbf{strings} that are the 
+    \item Header values are unique non-empty \textbf{strings} that are the
           labels for the columns.
-    \item The last header values may be or start with \texttt{\small FILE}. No 
+    \item The last header values may be or start with \texttt{\small FILE}. No
           other non-\texttt{\small FILE} columns can occur after the first
-          \texttt{\small FILE} columns (\texttt{\small FILE} columns are 
-          always last). 
+          \texttt{\small FILE} columns (\texttt{\small FILE} columns are
+          always last).
 \end{enumerate}
 
 \item The remaining lines in the file are data rows.
@@ -26,26 +26,26 @@ following requirements are met.} The specification for the Spec D v\version
 \begin{enumerate}
     \item There must be at least one data row.
     \item Each data line is populated with an equal number of values
-          (columns) as the header (i.e., the same number of separating commas 
+          (columns) as the header (i.e., the same number of separating commas
           per row).
-    \item All data values must be \textbf{floats} (floating-point values), 
-          \textbf{integers}, \textbf{strings}, or \textbf{empty} (missing) 
+    \item All data values must be \textbf{floats} (floating-point values),
+          \textbf{integers}, \textbf{strings}, or \textbf{empty} (missing)
           values.
     \item All columns are \textbf{required} to have the same value type for
-          all data rows, either \textbf{float}, \textbf{integer}, or 
+          all data rows, either \textbf{float}, \textbf{integer}, or
           \textbf{string}.
-    \item \textbf{Empty} values may appear in any column and data row, are represented by an empty string.  
-    \item A literal empty \textbf{string} is represented by two double-quotes: 
-          \texttt{""}, which is different from both an \textbf{empty} (missing) 
-          value or \textbf{NaN}. 
-    \item A data value representing a file path must be a string containing either 
+    \item \textbf{Empty} values may appear in any column and data row, are represented by an empty string.
+    \item A literal empty \textbf{string} is represented by two double-quotes:
+          \texttt{""}, which is different from both an \textbf{empty} (missing)
+          value or \textbf{NaN}.
+    \item A data value representing a file path must be a string containing either
           a) a POSIX file path, or b) a URI.
     \begin{enumerate}
-    \item Files can be of any type, as indicated by MIME name extension, e.g., 
+    \item Files can be of any type, as indicated by MIME name extension, e.g.,
           \textbf{.png}, \textbf{.vti}, \textbf{.txt}, etc.
     \end{enumerate}
 % \begin{enumerate}
-% \item Consumers of Spec D databases (readers, viewers, and analytics tools) are not required to display or read all file formats. This is handled on a case-by-case basis, for the specific use cases, supported by each implementation.  Implementations must provide appropriate error messages indicating when particular file formats are not supported. 
+% \item Consumers of Spec D databases (readers, viewers, and analytics tools) are not required to display or read all file formats. This is handled on a case-by-case basis, for the specific use cases, supported by each implementation.  Implementations must provide appropriate error messages indicating when particular file formats are not supported.
 % \begin{enumerate}
 % \item For clarity, we note here that browser-based viewers of Spec D are required to display the common web image file formats of JPEG, PNG, and GIF, and may ignore other file formats.
 % \end{enumerate}
@@ -59,10 +59,10 @@ column.  We assume that built-in parsing in modern languages is available and
 can be used to test, parse, and convert values from the \texttt{\small csv}
 file.
 
-In our previous examples {\bf 1} and {\bf 2}, the types of the columns are 
+In our previous examples {\bf 1} and {\bf 2}, the types of the columns are
 \textbf{integer}, four columns of \textbf{float}, and \textbf{string}. For
-the case of example {\bf 1}, determining the data types for columns 2 and 4 
-are deferred until the second row is parsed. All other subsequent values must 
+the case of example {\bf 1}, determining the data types for columns 2 and 4
+are deferred until the second row is parsed. All other subsequent values must
 be the same data type or \textbf{empty}.
 
 Parsing precedence for determining the type of a column is: \textbf{integer},
@@ -87,11 +87,11 @@ Further explanation on particular values:
   comma separators.  This is part of the rfc4180 specification. Whitespace {\em
   cannot} appear before or after a comma that has a double-quoted value, as
   that is an invalid rfc4180 file.
-\item Commas and double-quotes are special characters that require 
-  enclosing the value in double-quotes. A literal double-quote must be preceded 
-  by another double-quote: e.g., \texttt{\small """"} is the value 
+\item Commas and double-quotes are special characters that require
+  enclosing the value in double-quotes. A literal double-quote must be preceded
+  by another double-quote: e.g., \texttt{\small """} is the value
   \texttt{\small "}. (Please refer to rfc4180.)
-\item A literal empty string must be represented as \texttt{\small ""}, as an 
+\item A literal empty string must be represented as \texttt{\small ""}, as an
   empty string (no text between two commas, or before the first comma
   or after the last comma) is \texttt{\small NULL} (empty value). Whitespace
   between commas will be interpreted as the whitespace \textbf{not} as an
