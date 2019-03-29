@@ -50,9 +50,10 @@ The Cinema toolkit consists of the following directories and repositories. Versi
 
 - `specs/`, a set of specifications for Cinema databases
 - `viewers/`
+    - `cinema_compare`, a simple comparison viewer for one or more databases 
     - `cinema_components`, a set of components that can be used to build browser-based cinema viewers 
     - `cinema_explorer`, the main browser-based cinema viewer, based on `cinema_components`
-    - `cinema_compare`, a simple comparison viewer for one or more databases 
+    - `cinema_scope`, a cross-platform cinema viewer application
 - `writers/`
     - `cinema_lib`, the cinema python library and `cinema` command line tool
 
