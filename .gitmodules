@@ -12,4 +12,4 @@
 	url = https://github.com/cinemascience/cinema_components
 [submodule "viewers/cinema_scope"]
 	path = viewers/cinema_scope
-	url = git@github.com:cinemascience/cinema_scope.git
+	url = https://github.com/cinemascience/cinema_scope
