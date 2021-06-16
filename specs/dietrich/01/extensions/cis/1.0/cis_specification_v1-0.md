@@ -2,7 +2,7 @@
 
 |    |    |
 |----|----|
-| Date    | 1 May 2019 |
+| Date    | 30 June 2021 |
 | Version | 1.0 |
 | Authors | David H. Rogers, John Patchet, Ethan Stam, Dave DeMarle, Sebastian Jourdain, Jonas Lukasczyk |
 
