@@ -16,10 +16,10 @@ The following are reserved keywords that implement the CIS extension metadata:
 |CISLayerHeight     | |int   |CISImadeHeight|Integer, number of pixels in height|
 |CISChannel         |X|string|N/A|ID of the channel. Any unique string on the path CISID/CISImage/CISLayer, with the exception of the reserved keywords (see below)| 
 |CISChannelVar      | |string|N/A|Variable for the channel, if different from the Channel ID|
-|CISChannelVarType  | |string|N/A|Variable type for the channel. One of: string, int, float| 
+|CISChannelVarType  | |string|float|Type of data in the channel. One of: string, int, float|
 |CISChannelVarMin   | |string|Derived from channel|Channel variable global min|
 |CISChannelVarMax   | |string|Derived from channel|Channel variable global max|
-|CISChannelType     | |string|float|Type of data in the channel. One of: string, int, float|
+|CISChannelColormap | |string|N/A|A colormap definition for the channel|
 
 
 ### CISChannel keywords
