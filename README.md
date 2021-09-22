@@ -1,7 +1,11 @@
-# Cinema Toolkit, v1.5 (October  2019)
+# Cinema Toolkit, v2.0 (October  2021)
 
 The Cinema toolkit has been developed by Los Alamos National Laboratory, as part
-of the [Cinema Project](http://cinemascience.org).
+of the [Cinema Project](http://cinemascience.org). 
+
+Many Cinema-related repositories can be found on the [github cinema group](https://github.com/cinemascience),
+however, those repositories are not automatically considered to be part of the official supported 
+Cinema releases. Supported Cinema repositories are included here, in the Cinema toolkit.
 
 Cinema is an innovative way of capturing, storing and exploring extreme scale
 scientific data. It is a highly interactive image-based approach to data
@@ -21,6 +25,10 @@ situ analysis to save detailed data about phenomena that a scientists knows
 about in advance. With Cinema, we have developed a novel framework for a third option – a highly
 interactive, compact and scalable way to explore data.
 
+# Update to Cinema 2.0
+
+The Cinema toolkit is updated with this release to track the [cinemasci module](https://github.com/cinemascience/cinemasci), where the bulk of new work is now being released. This new model of the Cinema Toolkit depricates command line tools, and embraces a single python module that contains a useful set of components for reading, writing and viewing Cinema databases. 
+
 # The Cinema Ecosystem
 
 The Cinema ecosystem consists of database specifications, writers,
@@ -33,6 +41,12 @@ Cinema are two common ones:
 - You can write your own database, using your current data, by referencing one
   of the database specifications in this repository.
 
+# Cinema Binder examples
+
+The Cinema ecosystem consists of database specifications, writers,
+[viewers](http://cinemaviewer.org) and algorithms. Among the many use cases for
+Cinema are two common ones:
+
 # Cinema Open Source releases
 
 All of the Cinema open source code can be found under the `cinemascience` group at
@@ -44,18 +58,13 @@ viewers.
 
 # Cinema Release 
 
-**[Current Release Notes](doc/release/1.3/notes.md)**
+**[Current Release Notes](doc/release/2.0/notes.md)**
 
 The Cinema toolkit consists of the following directories and repositories. Version information, test plans and documentation can be found in the individual repositories: 
 
 - `specs/`, a set of specifications for Cinema databases
-- `viewers/`
-    - `cinema_compare`, a simple comparison viewer for one or more databases 
-    - `cinema_components`, a set of components that can be used to build browser-based cinema viewers 
-    - `cinema_explorer`, the main browser-based cinema viewer, based on `cinema_components`
-    - `cinema_scope`, a cross-platform cinema viewer application
-- `writers/`
-    - `cinema_lib`, the cinema python library and `cinema` command line tool
+- `cinemasci/`
+    - the `cinemasci` module, which now contains the bulk of the components, including viewers. 
 
 # Submodules in this repository 
 
