@@ -3,10 +3,6 @@
 The Cinema toolkit has been developed by Los Alamos National Laboratory, as part
 of the [Cinema Project](http://cinemascience.org). 
 
-Many Cinema-related repositories can be found on the [github cinema group](https://github.com/cinemascience),
-however, those repositories are not automatically considered to be part of the official supported 
-Cinema releases. Supported Cinema repositories are included here, in the Cinema toolkit.
-
 Cinema is an innovative way of capturing, storing and exploring extreme scale
 scientific data. It is a highly interactive image-based approach to data
 analysis and exploration that promotes investigation of large scientific
@@ -24,6 +20,12 @@ write large files to disk for interactive, exploratory analysis, or perform in
 situ analysis to save detailed data about phenomena that a scientists knows
 about in advance. With Cinema, we have developed a novel framework for a third option – a highly
 interactive, compact and scalable way to explore data.
+
+# Cinema Toolkit repositories are a subset of github/cinemascience group
+
+Many Cinema-related repositories can be found on the [github cinema group](https://github.com/cinemascience),
+however, those repositories are not automatically considered to be part of the official supported 
+Cinema releases. Supported Cinema repositories are included here, in the Cinema toolkit.
 
 # Update to Cinema 2.0
 
