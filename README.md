@@ -21,7 +21,7 @@ situ analysis to save detailed data about phenomena that a scientists knows
 about in advance. With Cinema, we have developed a novel framework for a third option – a highly
 interactive, compact and scalable way to explore data.
 
-# Cinema Toolkit repositories are a subset of github/cinemascience group
+# Cinema Toolkit code and repositories
 
 Many Cinema-related repositories can be found on the [github cinema group](https://github.com/cinemascience),
 however, those repositories are not automatically considered to be part of the official supported 
@@ -60,15 +60,13 @@ viewers.
 
 # Cinema Release 
 
-**[Current Release Notes](doc/release/2.0/notes.md)**
-
 The Cinema toolkit consists of the following directories and repositories. Version information, test plans and documentation can be found in the individual repositories: 
 
 - `specs/`, a set of specifications for Cinema databases
 - `cinemasci/`
     - the `cinemasci` module, which now contains the bulk of the components, including viewers. 
 
-# Submodules in this repository 
+# Checking out this toolkit 
 
 Please note that this repository contains submodules, so you will have to update
 those modules after cloning:
