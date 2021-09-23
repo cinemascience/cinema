@@ -1,15 +1,3 @@
-[submodule "writers/cinema_lib"]
-	path = writers/cinema_lib
-	url = https://github.com/cinemascience/cinema_lib
-[submodule "viewers/cinema_explorer"]
-	path = viewers/cinema_explorer
-	url = https://github.com/cinemascience/cinema_explorer
-[submodule "viewers/cinema_compare"]
-	path = viewers/cinema_compare
-	url = https://github.com/cinemascience/cinema_compare
-[submodule "viewers/cinema_components"]
-	path = viewers/cinema_components
-	url = https://github.com/cinemascience/cinema_components
-[submodule "viewers/cinema_scope"]
-	path = viewers/cinema_scope
-	url = git@github.com:cinemascience/cinema_scope.git
+[submodule "cinemasci"]
+	path = cinemasci
+	url = https://github.com/cinemascience/cinemasci.git
