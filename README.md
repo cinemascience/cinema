@@ -64,7 +64,7 @@ The Cinema toolkit consists of the following directories and repositories. Versi
 
 - `specs/`, a set of specifications for Cinema databases
 - `cinemasci/`
-    - the `cinemasci` module, which now contains the bulk of the components, including viewers. 
+    - the [`cinemasci`](https://github.com/cinemascience/cinemasci) module, which now contains the bulk of the components, including viewers. 
 
 # Checking out this toolkit 
 
