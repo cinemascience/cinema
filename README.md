@@ -41,9 +41,9 @@ Major updates for this release of the toolkit:
 
 - [Jupyter Notebook support]() Jupyter notebooks are a very flexible way for scientists to interact with Cinema databases. In conjunction with the CIS image format, this provides novel ways to analyze and present Cinema databases. Included in the `cinemasci` module are renderers and viewers providing reference implementations for Jupyter-based viewers.
 
-<center>
+<p align="center">
 <img width="75%" src="https://github.com/cinemascience/cinemasci/wiki/img/viewer_figure.png"></img>
-</center>
+</p>
 
 # The Cinema Ecosystem
 
