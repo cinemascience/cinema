@@ -31,6 +31,20 @@ Cinema releases. Supported Cinema repositories are included here, in the Cinema 
 
 The Cinema toolkit is updated with this release to track the [cinemasci module](https://github.com/cinemascience/cinemasci), where the bulk of new work is now being released. This new model of the Cinema Toolkit depricates command line tools, and embraces a single python module that contains a useful set of components for reading, writing and viewing Cinema databases. 
 
+Major updates for this release of the toolkit:
+
+- [The Cinema Composable Image Set specification](https://github.com/cinemascience/cinema/blob/master/specs/dietrich/01/extensions/cis/1.0/cis_specification_v1-0.md) The CIS specification supports composable images, which allow interactive coloring and manipulation (such as layer on/off control, etc.), and allows scientists access to float values from within the images.
+
+<center>
+<img width="75%" src="https://raw.githubusercontent.com/wiki/cinemascience/cinemasci/img/capability_figure.png"></img>
+</center>
+
+- [Jupyter Notebook support]() Jupyter notebooks are a very flexible way for scientists to interact with Cinema databases. In conjunction with the CIS image format, this provides novel ways to analyze and present Cinema databases. Included in the `cinemasci` module are renderers and viewers providing reference implementations for Jupyter-based viewers.
+
+<center>
+<img width="75%" src="https://github.com/cinemascience/cinemasci/wiki/img/viewer_figure.png"></img>
+</center>
+
 # The Cinema Ecosystem
 
 The Cinema ecosystem consists of database specifications, writers,
