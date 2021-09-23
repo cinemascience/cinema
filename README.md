@@ -35,9 +35,9 @@ Major updates for this release of the toolkit:
 
 - [The Cinema Composable Image Set specification](https://github.com/cinemascience/cinema/blob/master/specs/dietrich/01/extensions/cis/1.0/cis_specification_v1-0.md) The CIS specification supports composable images, which allow interactive coloring and manipulation (such as layer on/off control, etc.), and allows scientists access to float values from within the images.
 
-<center>
+<p align="center">
 <img width="75%" src="https://raw.githubusercontent.com/wiki/cinemascience/cinemasci/img/capability_figure.png"></img>
-</center>
+</p>
 
 - [Jupyter Notebook support]() Jupyter notebooks are a very flexible way for scientists to interact with Cinema databases. In conjunction with the CIS image format, this provides novel ways to analyze and present Cinema databases. Included in the `cinemasci` module are renderers and viewers providing reference implementations for Jupyter-based viewers.
 
