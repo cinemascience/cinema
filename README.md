@@ -57,12 +57,6 @@ Cinema are two common ones:
 - You can write your own database, using your current data, by referencing one
   of the database specifications in this repository.
 
-# Cinema Binder examples
-
-The Cinema ecosystem consists of database specifications, writers,
-[viewers](http://cinemaviewer.org) and algorithms. Among the many use cases for
-Cinema are two common ones:
-
 # Cinema Open Source releases
 
 All of the Cinema open source code can be found under the `cinemascience` group at
