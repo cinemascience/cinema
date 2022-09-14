@@ -21,6 +21,10 @@ situ analysis to save detailed data about phenomena that a scientists knows
 about in advance. With Cinema, we have developed a novel framework for a third option – a highly
 interactive, compact and scalable way to explore data.
 
+# Cinema Data Specification
+
+The [Current Data Specification](https://github.com/cinemascience/cinema/blob/master/specs/dietrich/01/cinema_specD_v012.pdf) describes the Cinema database data format, which can be easily written and read applications, tools and scripts.
+
 # Cinema Toolkit code and repositories
 
 Many Cinema-related repositories can be found on the [github cinema group](https://github.com/cinemascience),
